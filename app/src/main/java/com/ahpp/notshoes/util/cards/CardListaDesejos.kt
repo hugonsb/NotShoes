@@ -1,6 +1,5 @@
 package com.ahpp.notshoes.util.cards
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,10 +40,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
 import com.ahpp.notshoes.R
-import com.ahpp.notshoes.constantes.clienteLogado
-import com.ahpp.notshoes.data.produto.ProdutoRepository
 import com.ahpp.notshoes.model.Produto
-import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
 import com.ahpp.notshoes.view.viewsLogado.produtoSelecionado
 import java.text.NumberFormat
 
@@ -52,7 +48,7 @@ import java.text.NumberFormat
 fun CardListaDesejos(
     onClickProduto: () -> Unit,
     produto: Produto,
-    onRemoveProduct: (Produto) -> Unit
+    onRemoveProduct: () -> Unit
 ) {
     val ctx = LocalContext.current
 
@@ -173,16 +169,7 @@ fun CardListaDesejos(
                 Button(
                     modifier = Modifier.size(30.dp), contentPadding = PaddingValues(0.dp),
                     onClick = {
-                        if (possuiConexao(ctx)) {
-                            val repository = ProdutoRepository()
-                            repository.removerProdutoListaDesejos(
-                                produto.idProduto,
-                                clienteLogado.idCliente
-                            )
-                            onRemoveProduct(produto)
-                        } else {
-                            Toast.makeText(ctx, "Erro de rede.", Toast.LENGTH_SHORT).show()
-                        }
+                        onRemoveProduct()
                     },
                     colors = ButtonDefaults.buttonColors(Color.White),
                     elevation = ButtonDefaults.buttonElevation(4.dp)

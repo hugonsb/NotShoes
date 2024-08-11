@@ -18,7 +18,6 @@ import java.util.concurrent.Executors
 class ProdutoRepository {
 
     private val client = OkHttpClient()
-    private var produtosList: List<Produto> = emptyList()
 
     suspend fun getPromocoes(): List<Produto> {
         return withContext(Dispatchers.IO) {
@@ -36,7 +35,7 @@ class ProdutoRepository {
 
                         if (jsonElement.isJsonArray) {
                             val jsonArray = jsonElement.asJsonArray
-                            produtosList = jsonArray.map { produtoJson ->
+                            return@withContext jsonArray.map { produtoJson ->
                                 val produtoArray = produtoJson.asJsonArray
                                 Produto(
                                     produtoArray[0].asInt,
@@ -57,7 +56,7 @@ class ProdutoRepository {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            return@withContext produtosList
+            return@withContext emptyList()
         }
     }
 
@@ -85,7 +84,7 @@ class ProdutoRepository {
 
                         if (jsonElement.isJsonArray) {
                             val jsonArray = jsonElement.asJsonArray
-                            produtosList = jsonArray.map { produtoJson ->
+                            return@withContext jsonArray.map { produtoJson ->
                                 val produtoArray = produtoJson.asJsonArray
                                 Produto(
                                     produtoArray[0].asInt,
@@ -106,7 +105,7 @@ class ProdutoRepository {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            return@withContext produtosList
+            return@withContext emptyList()
         }
     }
 
@@ -126,7 +125,7 @@ class ProdutoRepository {
 
                         if (jsonElement.isJsonArray) {
                             val jsonArray = jsonElement.asJsonArray
-                            produtosList = jsonArray.map { produtoJson ->
+                            return@withContext jsonArray.map { produtoJson ->
                                 val produtoArray = produtoJson.asJsonArray
                                 Produto(
                                     produtoArray[0].asInt,
@@ -147,7 +146,7 @@ class ProdutoRepository {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            return@withContext produtosList
+            return@withContext emptyList()
         }
     }
 
@@ -167,7 +166,7 @@ class ProdutoRepository {
 
                         if (jsonElement.isJsonArray) {
                             val jsonArray = jsonElement.asJsonArray
-                            produtosList = jsonArray.map { produtoJson ->
+                            return@withContext jsonArray.map { produtoJson ->
                                 val produtoArray = produtoJson.asJsonArray
                                 Produto(
                                     produtoArray[0].asInt,
@@ -188,7 +187,7 @@ class ProdutoRepository {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            return@withContext produtosList
+            return@withContext emptyList()
         }
     }
 
@@ -215,7 +214,7 @@ class ProdutoRepository {
 
                         if (jsonElement.isJsonArray) {
                             val jsonArray = jsonElement.asJsonArray
-                            produtosList = jsonArray.map { produtoJson ->
+                            return@withContext jsonArray.map { produtoJson ->
                                 val produtoArray = produtoJson.asJsonArray
                                 Produto(
                                     produtoArray[0].asInt,
@@ -236,8 +235,7 @@ class ProdutoRepository {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-
-            return@withContext produtosList
+            return@withContext emptyList()
         }
     }
 

@@ -11,6 +11,7 @@ import com.ahpp.notshoes.R
 import com.ahpp.notshoes.constantes.FiltrosList.coresList
 import com.ahpp.notshoes.constantes.FiltrosList.precosList
 import com.ahpp.notshoes.constantes.FiltrosList.tamanhosList
+import com.ahpp.notshoes.constantes.FiltrosList.tipoOrdenacaoList
 import com.ahpp.notshoes.constantes.clienteLogado
 import com.ahpp.notshoes.data.produto.ProdutoRepository
 import com.ahpp.notshoes.model.Produto
@@ -183,7 +184,8 @@ class ResultadosScreenViewModel(
             currentState.copy(
                 cor = coresList[0],
                 tamanho = tamanhosList[0],
-                preco = precosList[0]
+                preco = precosList[0],
+                tipoOrdenacao = tipoOrdenacaoList[0]
             )
         }
         buscarProduto(ctx, _resultadosScreenState.value.valorBusca, _resultadosScreenState.value.tipoBusca)

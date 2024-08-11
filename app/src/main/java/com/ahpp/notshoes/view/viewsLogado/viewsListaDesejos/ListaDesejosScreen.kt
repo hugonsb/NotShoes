@@ -13,13 +13,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,26 +30,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ahpp.notshoes.R
-import com.ahpp.notshoes.data.produto.ProdutoRepository
-import com.ahpp.notshoes.model.Produto
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.util.cards.CardListaDesejos
-import com.ahpp.notshoes.view.screensReutilizaveis.ProdutoScreen
 import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
+import com.ahpp.notshoes.view.screensReutilizaveis.ProdutoScreen
 import com.ahpp.notshoes.view.screensReutilizaveis.SemConexaoScreen
-import com.ahpp.notshoes.constantes.clienteLogado
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.ahpp.notshoes.viewModel.logado.listaDesejos.ListaDesejosViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ListaDeDesejoscreen() {
+fun ListaDeDesejoscreen(listaDesejosViewModel: ListaDesejosViewModel = koinViewModel<ListaDesejosViewModel>()) {
 
     val ctx = LocalContext.current
 
     var internetCheker by remember { mutableStateOf(possuiConexao(ctx)) }
-
-    // manter a posicao do scroll ao voltar pra tela
-    val listState = rememberLazyListState()
 
     //clickedProduto é usado para monitorar a tela de produto selecionado
     //ela se torna true quando um produto é clicado lá em CardListaDesejos()
@@ -65,19 +59,38 @@ fun ListaDeDesejoscreen() {
         ProdutoScreen(onBackPressed = {
             clickedProduto = false
             internetCheker = possuiConexao(ctx)
+            listaDesejosViewModel.atualizarListaDesejos()
         })
     } else {
+        ListaDesejosContent(onclickedProduto = { clickedProduto = true }, listaDesejosViewModel)
+    }
+}
 
-        var produtosList by remember { mutableStateOf(emptyList<Produto>()) }
+@Composable
+fun ListaDesejosContent(
+    onclickedProduto: () -> Unit,
+    listaDesejosViewModel: ListaDesejosViewModel
+) {
 
-        val scope = rememberCoroutineScope()
-        LaunchedEffect(Unit) {
-            scope.launch(Dispatchers.IO) {
-                val repository = ProdutoRepository()
-                produtosList = repository.getProdutosListaDesejos(clienteLogado.idListaDesejos)
-            }
+    val ctx = LocalContext.current
+
+    val uiState by listaDesejosViewModel.listaDesejosState.collectAsState()
+
+    val produtosList = uiState.produtosList
+
+    // manter a posicao do scroll ao voltar pra tela
+    val listState = rememberLazyListState()
+
+    if (uiState.isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
         }
-
+    } else {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -112,14 +125,17 @@ fun ListaDeDesejoscreen() {
             ) {
 
                 if (produtosList.isNotEmpty()) {
-                    LazyColumn(state = listState) {
-                        items(items = produtosList) { produto ->
-                            CardListaDesejos(onClickProduto = { clickedProduto = true },
+                    LazyColumn(
+                        state = listState
+                    ) {
+                        items(items = produtosList, key = { it.idProduto }) { produto ->
+                            CardListaDesejos(onClickProduto = { onclickedProduto() },
                                 produto,
-                                //atualizar a lista de desejos na tela após remover um produto
-                                onRemoveProduct = { removedProduto ->
-                                    produtosList =
-                                        produtosList.filter { it.idProduto != removedProduto.idProduto }
+                                onRemoveProduct = {
+                                    listaDesejosViewModel.removerProdutoListaDesejos(
+                                        produto.idProduto,
+                                        ctx
+                                    )
                                 })
                         }
                     }
@@ -137,11 +153,7 @@ fun ListaDeDesejoscreen() {
                         )
                     }
                 }
-
             }
-
         }
-
     }
-
 }

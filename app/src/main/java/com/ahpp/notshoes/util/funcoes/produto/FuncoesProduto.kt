@@ -6,7 +6,6 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import com.ahpp.notshoes.data.carrinho.CarrinhoRepository
-import com.ahpp.notshoes.data.produto.ProdutoRepository
 import com.ahpp.notshoes.model.Produto
 import com.ahpp.notshoes.constantes.clienteLogado
 import java.io.IOException
@@ -67,23 +66,4 @@ fun adicionarProdutoCarrinho(ctx: Context, produto: Produto) {
             Log.e("Erro: ", e.message.toString())
         }
     })
-}
-
-fun adicionarListaDesejos(adicionadoListaDesejosCheck: String, produto: Produto): String {
-
-    val produtoRepository = ProdutoRepository()
-
-    if (adicionadoListaDesejosCheck == "0") {
-        produtoRepository.adicionarProdutoListaDesejos(
-            produto.idProduto, clienteLogado.idCliente
-        )
-        return "1"
-    } else if (adicionadoListaDesejosCheck == "1") {
-        produtoRepository.removerProdutoListaDesejos(
-            produto.idProduto,
-            clienteLogado.idCliente
-        )
-        return "0"
-    }
-    return "0"
 }

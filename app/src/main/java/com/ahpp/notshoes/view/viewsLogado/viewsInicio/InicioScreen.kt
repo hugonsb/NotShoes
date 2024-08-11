@@ -159,7 +159,6 @@ fun InicioScreen(navControllerInicio: NavHostController, navBarController: NavHo
             NavegarPorMarcas(navControllerInicio)
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
