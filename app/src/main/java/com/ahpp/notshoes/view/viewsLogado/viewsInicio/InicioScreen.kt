@@ -54,10 +54,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,22 +75,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import com.ahpp.notshoes.R
-import com.ahpp.notshoes.data.produto.ProdutoRepository
-import kotlinx.coroutines.delay
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.ahpp.notshoes.model.Produto
+import com.ahpp.notshoes.R
 import com.ahpp.notshoes.ui.theme.backgroundBarraPesquisa
 import com.ahpp.notshoes.ui.theme.branco
 import com.ahpp.notshoes.ui.theme.verde
-import com.ahpp.notshoes.view.screensReutilizaveis.ProdutoScreen
 import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
+import com.ahpp.notshoes.view.screensReutilizaveis.ProdutoScreen
 import com.ahpp.notshoes.view.screensReutilizaveis.SemConexaoScreen
 import com.ahpp.notshoes.view.viewsLogado.produtoSelecionado
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.ahpp.notshoes.viewModel.logado.inicio.PromocoesInicioScreenViewModel
+import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 import java.text.NumberFormat
 
 @Composable
@@ -522,17 +520,12 @@ fun FiltrosTelaInicial(
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun Promocoes(onPromocaoClicked: () -> Unit) {
-
-    val repository = ProdutoRepository()
-    var ofertas by remember { mutableStateOf(emptyList<Produto>()) }
-
-    val scope = rememberCoroutineScope()
-    LaunchedEffect(Unit) {
-        scope.launch(Dispatchers.IO) {
-            ofertas = repository.getPromocoes()
-        }
-    }
+fun Promocoes(
+    onPromocaoClicked: () -> Unit,
+    promocoesInicioScreenViewModel: PromocoesInicioScreenViewModel = koinViewModel<PromocoesInicioScreenViewModel>()
+) {
+    val uiState by promocoesInicioScreenViewModel.promocoesInicioScreenState.collectAsState()
+    val ofertas = uiState.ofertas
 
     val localeBR = java.util.Locale("pt", "BR")
     val numberFormat = NumberFormat.getCurrencyInstance(localeBR)

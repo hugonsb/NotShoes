@@ -48,7 +48,7 @@ import com.ahpp.notshoes.data.endereco.getEnderecos
 import com.ahpp.notshoes.model.Endereco
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.util.cards.CardEndereco
-import com.ahpp.notshoes.util.funcoes.canGoBack
+import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
 import com.ahpp.notshoes.view.screensReutilizaveis.SemConexaoScreen
 import com.ahpp.notshoes.constantes.clienteLogado

@@ -1,4 +1,4 @@
-package com.ahpp.notshoes.view.viewsLogado.viewsInicio
+package com.ahpp.notshoes.navigation.inicio
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -8,9 +8,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ahpp.notshoes.view.screensReutilizaveis.ResultadosScreen
+import com.ahpp.notshoes.view.viewsLogado.viewsInicio.InicioScreen
 
 @Composable
-fun InicioScreenController(navBarController: NavHostController) {
+fun NavManagerInicioScreen(navBarController: NavHostController) {
     val navControllerInicio = rememberNavController()
     NavHost(navController = navControllerInicio, startDestination = "inicioScreen") {
 

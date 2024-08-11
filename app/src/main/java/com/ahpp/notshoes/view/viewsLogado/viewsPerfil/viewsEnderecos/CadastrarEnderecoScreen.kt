@@ -53,7 +53,7 @@ import com.ahpp.notshoes.data.cliente.getCliente
 import com.ahpp.notshoes.data.endereco.AdicionarEnderecoCliente
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.corPlaceholder
-import com.ahpp.notshoes.util.funcoes.canGoBack
+import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.util.validacao.ValidarCamposEndereco
 import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
 import com.ahpp.notshoes.util.visualTransformation.CepVisualTransformation

@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ahpp.notshoes.R
 import com.ahpp.notshoes.ui.theme.azulEscuro
-import com.ahpp.notshoes.util.funcoes.canGoBack
+import com.ahpp.notshoes.navigation.canGoBack
 
 @Composable
 fun SeusDadosScreen(navControllerPerfil: NavController, navControllerSeusDados: NavController) {

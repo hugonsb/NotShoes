@@ -57,7 +57,7 @@ import com.ahpp.notshoes.states.deslogado.RegistroScreenState
 import com.ahpp.notshoes.ui.theme.azulClaro
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.corPlaceholder
-import com.ahpp.notshoes.util.funcoes.canGoBack
+import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.viewModel.deslogado.RegistroScreenViewModel
 
 @Composable

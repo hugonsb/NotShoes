@@ -27,6 +27,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -78,6 +79,8 @@ dependencies {
     implementation (libs.gson)
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp3.okhttp)
+
+    //dependencias para carregar imagens
     implementation(libs.coil.compose)
 
     //dependencia para datastore utilizado para salvar o id do usuario logado

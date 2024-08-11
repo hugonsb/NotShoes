@@ -48,8 +48,6 @@ suspend fun getPedidos(idClienteLogado: Int): List<Venda> {
                         vendasList = jsonArray.map { vendaJson ->
                             val vendaArray = vendaJson.asJsonArray
 
-                            Log.e("PedidosRepo", vendaArray.toString())
-
                             val dataPedido = LocalDate.parse(vendaArray[1].asString, inputFormatter)
 
                             Venda(

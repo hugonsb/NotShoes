@@ -1,4 +1,4 @@
-package com.ahpp.notshoes.util.funcoes
+package com.ahpp.notshoes.navigation
 
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController

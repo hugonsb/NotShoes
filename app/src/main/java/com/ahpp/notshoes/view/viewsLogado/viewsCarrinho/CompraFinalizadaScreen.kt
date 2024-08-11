@@ -35,7 +35,7 @@ import com.ahpp.notshoes.R
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.branco
 import com.ahpp.notshoes.ui.theme.verde
-import com.ahpp.notshoes.util.funcoes.canGoBack
+import com.ahpp.notshoes.navigation.canGoBack
 
 @Composable
 fun CompraFinalizadaScreen(navControllerCarrinho: NavController) {

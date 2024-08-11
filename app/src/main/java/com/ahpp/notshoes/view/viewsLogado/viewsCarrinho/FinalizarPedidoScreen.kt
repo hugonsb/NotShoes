@@ -64,7 +64,7 @@ import com.ahpp.notshoes.ui.theme.branco
 import com.ahpp.notshoes.ui.theme.verde
 import com.ahpp.notshoes.util.RadioButtonButtonPersonalizado
 import com.ahpp.notshoes.util.cards.CardEnderecoCarrinho
-import com.ahpp.notshoes.util.funcoes.canGoBack
+import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
 import com.ahpp.notshoes.util.viewModel.CarrinhoViewModel
 import com.ahpp.notshoes.view.screensReutilizaveis.SemConexaoScreen

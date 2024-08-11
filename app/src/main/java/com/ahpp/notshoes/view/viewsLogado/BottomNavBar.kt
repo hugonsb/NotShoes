@@ -31,7 +31,7 @@ import com.ahpp.notshoes.ui.theme.azulClaro
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.view.viewsLogado.viewsCarrinho.CarrinhoScreenController
 import com.ahpp.notshoes.view.viewsLogado.viewsCategoria.CategoriaScreenController
-import com.ahpp.notshoes.view.viewsLogado.viewsInicio.InicioScreenController
+import com.ahpp.notshoes.navigation.inicio.NavManagerInicioScreen
 import com.ahpp.notshoes.view.viewsLogado.viewsListaDesejos.ListaDeDesejoscreen
 import com.ahpp.notshoes.view.viewsLogado.viewsPerfil.PerfilScreenController
 
@@ -91,7 +91,7 @@ fun BottomNavBar(navControllerLogin: NavController) {
             startDestination = BottomNavItem.Inicio.route,
             Modifier.padding(innerPadding)
         ) {
-            composable(BottomNavItem.Inicio.route) { InicioScreenController(navBarController) }
+            composable(BottomNavItem.Inicio.route) { NavManagerInicioScreen(navBarController) }
             composable(BottomNavItem.Categorias.route) { CategoriaScreenController() }
             composable(BottomNavItem.Carrinho.route) { CarrinhoScreenController() }
             composable(BottomNavItem.ListaDesejos.route) { ListaDeDesejoscreen() }
