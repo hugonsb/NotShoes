@@ -171,7 +171,7 @@ fun ProdutoScreen(onBackPressed: () -> Unit) {
             }
         }
 
-        //a coluna abaixo tem o resto
+        //a coluna abaixo tem o conteudo
         Column(
             modifier = Modifier
                 .fillMaxSize()

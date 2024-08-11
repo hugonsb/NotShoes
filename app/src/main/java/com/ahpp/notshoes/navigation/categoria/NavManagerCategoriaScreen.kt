@@ -1,4 +1,4 @@
-package com.ahpp.notshoes.view.viewsLogado.viewsCategoria
+package com.ahpp.notshoes.navigation.categoria
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
@@ -7,9 +7,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.ahpp.notshoes.view.screensReutilizaveis.ResultadosScreen
+import com.ahpp.notshoes.view.viewsLogado.viewsCategoria.CategoriaScreen
 
 @Composable
-fun CategoriaScreenController() {
+fun NavManagerCategoriaScreen() {
     val navControllerCategoria = rememberNavController()
     NavHost(navController = navControllerCategoria, startDestination = "categoriaScreen") {
 

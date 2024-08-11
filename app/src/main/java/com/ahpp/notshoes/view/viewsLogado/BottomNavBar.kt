@@ -21,21 +21,19 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ahpp.notshoes.model.Produto
+import com.ahpp.notshoes.navigation.categoria.NavManagerCategoriaScreen
+import com.ahpp.notshoes.navigation.inicio.NavManagerInicioScreen
 import com.ahpp.notshoes.ui.theme.azulClaro
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.view.viewsLogado.viewsCarrinho.CarrinhoScreenController
-import com.ahpp.notshoes.view.viewsLogado.viewsCategoria.CategoriaScreenController
-import com.ahpp.notshoes.navigation.inicio.NavManagerInicioScreen
 import com.ahpp.notshoes.view.viewsLogado.viewsListaDesejos.ListaDeDesejoscreen
 import com.ahpp.notshoes.view.viewsLogado.viewsPerfil.PerfilScreenController
 
-// nao pretendo trocar pra viewHolder porque vai ter que mudar mt coisa
 lateinit var produtoSelecionado: Produto
 
 @Composable
@@ -72,13 +70,11 @@ fun BottomNavBar(navControllerLogin: NavController) {
                         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
                             navBarController.navigate(screen.route) {
-                                popUpTo(navBarController.graph.findStartDestination().id) {
-                                    saveState = true
+                                popUpTo(screen.route) {
+                                    inclusive = true
                                 }
                                 // // evitar abrir novamente a mesma tela ao reselecionar mesmo item
                                 launchSingleTop = true
-                                // restaura o estado ao voltar para a tela anterior
-                                restoreState = true
                             }
                         }
                     )
@@ -92,7 +88,7 @@ fun BottomNavBar(navControllerLogin: NavController) {
             Modifier.padding(innerPadding)
         ) {
             composable(BottomNavItem.Inicio.route) { NavManagerInicioScreen(navBarController) }
-            composable(BottomNavItem.Categorias.route) { CategoriaScreenController() }
+            composable(BottomNavItem.Categorias.route) { NavManagerCategoriaScreen() }
             composable(BottomNavItem.Carrinho.route) { CarrinhoScreenController() }
             composable(BottomNavItem.ListaDesejos.route) { ListaDeDesejoscreen() }
             composable(BottomNavItem.Perfil.route) { PerfilScreenController(navControllerLogin) }

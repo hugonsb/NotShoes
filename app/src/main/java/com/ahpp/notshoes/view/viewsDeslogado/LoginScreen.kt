@@ -72,7 +72,7 @@ fun LoginScreen(
         loginScreenViewModel.resetLoginScreenState()
     }
 
-    val uiLoginScreenState by loginScreenViewModel.loginScreenState.collectAsState()
+    val uiState by loginScreenViewModel.loginScreenState.collectAsState()
     val idUsuario by loginScreenViewModel.idUsuario.collectAsState()
 
     val ctx = LocalContext.current
@@ -110,7 +110,7 @@ fun LoginScreen(
     if (isLoading) {
         LoadingScreen()
     } else {
-        LoginContent(uiLoginScreenState, loginScreenViewModel, ctx, navController)
+        LoginContent(uiState, loginScreenViewModel, ctx, navController)
     }
 }
 
