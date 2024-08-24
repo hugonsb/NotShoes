@@ -29,10 +29,11 @@ import com.ahpp.notshoes.model.Produto
 import com.ahpp.notshoes.navigation.logado.carrinho.NavManagerCarrinhoScreen
 import com.ahpp.notshoes.navigation.logado.categoria.NavManagerCategoriaScreen
 import com.ahpp.notshoes.navigation.logado.inicio.NavManagerInicioScreen
+import com.ahpp.notshoes.navigation.logado.perfil.NavManagerPerfilScreen
 import com.ahpp.notshoes.ui.theme.azulClaro
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.view.viewsLogado.viewsListaDesejos.ListaDeDesejoscreen
-import com.ahpp.notshoes.view.viewsLogado.viewsPerfil.PerfilScreenController
+
 
 lateinit var produtoSelecionado: Produto
 
@@ -91,7 +92,7 @@ fun BottomNavBar(navControllerLogin: NavController) {
             composable(BottomNavItem.Categorias.route) { NavManagerCategoriaScreen() }
             composable(BottomNavItem.Carrinho.route) { NavManagerCarrinhoScreen() }
             composable(BottomNavItem.ListaDesejos.route) { ListaDeDesejoscreen() }
-            composable(BottomNavItem.Perfil.route) { PerfilScreenController(navControllerLogin) }
+            composable(BottomNavItem.Perfil.route) { NavManagerPerfilScreen(navControllerLogin) }
         }
     }
 }
