@@ -55,7 +55,7 @@ import com.ahpp.notshoes.ui.theme.azulClaro
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.corPlaceholder
 import com.ahpp.notshoes.util.LoadingScreen
-import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
+import com.ahpp.notshoes.util.conexao.possuiConexao
 import com.ahpp.notshoes.viewModel.deslogado.LoginScreenViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

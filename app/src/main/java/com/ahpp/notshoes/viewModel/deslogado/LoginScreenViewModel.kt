@@ -15,7 +15,7 @@ import com.ahpp.notshoes.data.cliente.LoginCliente
 import com.ahpp.notshoes.data.cliente.getCliente
 import com.ahpp.notshoes.dataStore
 import com.ahpp.notshoes.states.deslogado.LoginScreenState
-import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
+import com.ahpp.notshoes.util.conexao.possuiConexao
 import com.ahpp.notshoes.util.validacao.ValidarCamposDados.validarEmail
 import com.ahpp.notshoes.util.validacao.ValidarCamposDados.validarSenha
 import kotlinx.coroutines.flow.MutableStateFlow

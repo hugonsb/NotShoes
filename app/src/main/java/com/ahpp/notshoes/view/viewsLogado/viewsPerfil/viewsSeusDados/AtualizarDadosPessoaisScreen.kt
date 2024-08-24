@@ -49,7 +49,7 @@ import com.ahpp.notshoes.ui.theme.corPlaceholder
 import com.ahpp.notshoes.util.RadioButtonButtonPersonalizado
 import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.util.validacao.ValidarCamposDados
-import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
+import com.ahpp.notshoes.util.conexao.possuiConexao
 import com.ahpp.notshoes.util.visualTransformation.CpfVisualTransformation
 import com.ahpp.notshoes.util.visualTransformation.PhoneVisualTransformation
 import com.ahpp.notshoes.constantes.clienteLogado

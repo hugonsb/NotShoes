@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.ahpp.notshoes.R
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.util.cards.CardListaDesejos
-import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
+import com.ahpp.notshoes.util.conexao.possuiConexao
 import com.ahpp.notshoes.view.screensReutilizaveis.ProdutoScreen
 import com.ahpp.notshoes.view.screensReutilizaveis.SemConexaoScreen
 import com.ahpp.notshoes.viewModel.logado.listaDesejos.ListaDesejosViewModel

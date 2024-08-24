@@ -1,24 +1,24 @@
-package com.ahpp.notshoes.view.viewsLogado.viewsCarrinho
+package com.ahpp.notshoes.navigation.logado.carrinho
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.ahpp.notshoes.util.viewModel.CarrinhoViewModel
+import com.ahpp.notshoes.view.viewsLogado.viewsCarrinho.CarrinhoScreen
+import com.ahpp.notshoes.view.viewsLogado.viewsCarrinho.CompraFinalizadaScreen
+import com.ahpp.notshoes.view.viewsLogado.viewsCarrinho.FinalizarPedidoScreen
 import com.ahpp.notshoes.view.viewsLogado.viewsPerfil.viewsEnderecos.CadastrarEnderecoScreen
 import com.ahpp.notshoes.view.viewsLogado.viewsPerfil.viewsSeusDados.AtualizarDadosPessoaisScreen
 
 @Composable
-fun CarrinhoScreenController() {
-    val carrinhoViewModel: CarrinhoViewModel = viewModel()
+fun NavManagerCarrinhoScreen() {
     val navControllerCarrinho = rememberNavController()
     NavHost(navController = navControllerCarrinho, startDestination = "carrinhoScreen") {
         composable(route = "carrinhoScreen") {
-            CarrinhoScreen(navControllerCarrinho, carrinhoViewModel)
+            CarrinhoScreen(navControllerCarrinho)
         }
         composable(route = "finalizarPedidoScreen") {
-            FinalizarPedidoScreen(navControllerCarrinho, carrinhoViewModel)
+            FinalizarPedidoScreen(navControllerCarrinho)
         }
         composable(route = "compraFinalizadaScreen") {
             CompraFinalizadaScreen(navControllerCarrinho)

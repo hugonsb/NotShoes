@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ahpp.notshoes.R
 import com.ahpp.notshoes.ui.theme.azulEscuro
-import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
+import com.ahpp.notshoes.util.conexao.possuiConexao
 
 @Composable
 fun SemConexaoScreen(onBackPressed: () -> Unit) {

@@ -1,4 +1,4 @@
-package com.ahpp.notshoes.navigation.inicio
+package com.ahpp.notshoes.navigation.logado.inicio
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController

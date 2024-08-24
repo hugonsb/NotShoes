@@ -55,11 +55,11 @@ import coil.size.Size
 import com.ahpp.notshoes.R
 import com.ahpp.notshoes.constantes.clienteLogado
 import com.ahpp.notshoes.data.produto.ProdutoRepository
+import com.ahpp.notshoes.data.produto.adicionarProdutoCarrinho
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.branco
 import com.ahpp.notshoes.ui.theme.verde
-import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
-import com.ahpp.notshoes.util.funcoes.produto.adicionarProdutoCarrinho
+import com.ahpp.notshoes.util.conexao.possuiConexao
 import com.ahpp.notshoes.view.viewsLogado.produtoSelecionado
 import com.ahpp.notshoes.viewModel.logado.listaDesejos.adicionarListaDesejos
 import java.text.NumberFormat

@@ -1,4 +1,4 @@
-package com.ahpp.notshoes.navigation.categoria
+package com.ahpp.notshoes.navigation.logado.categoria
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType

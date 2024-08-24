@@ -41,7 +41,7 @@ import com.ahpp.notshoes.model.Venda
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.util.cards.CardPedidos
 import com.ahpp.notshoes.navigation.canGoBack
-import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
+import com.ahpp.notshoes.util.conexao.possuiConexao
 import com.ahpp.notshoes.view.screensReutilizaveis.SemConexaoScreen
 import com.ahpp.notshoes.constantes.clienteLogado
 

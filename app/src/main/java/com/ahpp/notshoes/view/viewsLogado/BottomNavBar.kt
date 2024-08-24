@@ -26,11 +26,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ahpp.notshoes.model.Produto
-import com.ahpp.notshoes.navigation.categoria.NavManagerCategoriaScreen
-import com.ahpp.notshoes.navigation.inicio.NavManagerInicioScreen
+import com.ahpp.notshoes.navigation.logado.carrinho.NavManagerCarrinhoScreen
+import com.ahpp.notshoes.navigation.logado.categoria.NavManagerCategoriaScreen
+import com.ahpp.notshoes.navigation.logado.inicio.NavManagerInicioScreen
 import com.ahpp.notshoes.ui.theme.azulClaro
 import com.ahpp.notshoes.ui.theme.azulEscuro
-import com.ahpp.notshoes.view.viewsLogado.viewsCarrinho.CarrinhoScreenController
 import com.ahpp.notshoes.view.viewsLogado.viewsListaDesejos.ListaDeDesejoscreen
 import com.ahpp.notshoes.view.viewsLogado.viewsPerfil.PerfilScreenController
 
@@ -89,7 +89,7 @@ fun BottomNavBar(navControllerLogin: NavController) {
         ) {
             composable(BottomNavItem.Inicio.route) { NavManagerInicioScreen(navBarController) }
             composable(BottomNavItem.Categorias.route) { NavManagerCategoriaScreen() }
-            composable(BottomNavItem.Carrinho.route) { CarrinhoScreenController() }
+            composable(BottomNavItem.Carrinho.route) { NavManagerCarrinhoScreen() }
             composable(BottomNavItem.ListaDesejos.route) { ListaDeDesejoscreen() }
             composable(BottomNavItem.Perfil.route) { PerfilScreenController(navControllerLogin) }
         }

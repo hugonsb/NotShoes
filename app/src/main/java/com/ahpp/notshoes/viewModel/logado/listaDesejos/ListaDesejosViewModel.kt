@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.ahpp.notshoes.constantes.clienteLogado
 import com.ahpp.notshoes.data.produto.ProdutoRepository
 import com.ahpp.notshoes.model.Produto
-import com.ahpp.notshoes.states.logado.listaDesejos.ListaDesejosState
-import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
+import com.ahpp.notshoes.states.logado.listaDesejos.ListaDesejosScreenState
+import com.ahpp.notshoes.util.conexao.possuiConexao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,8 +19,8 @@ class ListaDesejosViewModel(
     private val produtoRepository: ProdutoRepository
 ) : ViewModel() {
 
-    private val _listaDesejosState = MutableStateFlow(ListaDesejosState())
-    val listaDesejosState: StateFlow<ListaDesejosState> = _listaDesejosState.asStateFlow()
+    private val _listaDesejosState = MutableStateFlow(ListaDesejosScreenState())
+    val listaDesejosState: StateFlow<ListaDesejosScreenState> = _listaDesejosState.asStateFlow()
 
     init {
         atualizarListaDesejos()

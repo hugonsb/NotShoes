@@ -62,7 +62,7 @@ class FinalizarPedido(
         }
     }
 
-    fun convertItensListToJson(itensList: List<ItemCarrinho>): JsonArray {
+    private fun convertItensListToJson(itensList: List<ItemCarrinho>): JsonArray {
         val jsonArray = JsonArray()
 
         for (item in itensList) {

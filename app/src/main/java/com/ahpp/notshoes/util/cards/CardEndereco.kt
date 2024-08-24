@@ -39,7 +39,7 @@ import com.ahpp.notshoes.constantes.clienteLogado
 import com.ahpp.notshoes.data.cliente.getCliente
 import com.ahpp.notshoes.data.endereco.RemoverEnderecoCliente
 import com.ahpp.notshoes.model.Endereco
-import com.ahpp.notshoes.util.funcoes.conexao.possuiConexao
+import com.ahpp.notshoes.util.conexao.possuiConexao
 import com.ahpp.notshoes.util.visualTransformation.CepVisualTransformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
