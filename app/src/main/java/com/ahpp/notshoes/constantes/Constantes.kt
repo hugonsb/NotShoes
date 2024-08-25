@@ -29,6 +29,41 @@ object CustomTextFieldColors {
     )
 }
 
+//cores para os campos de trexto da tela de atualizar dados pessoais
+object ColorsTextFieldDadosPessoais {
+    @Composable
+    fun colorsTextField() = OutlinedTextFieldDefaults.colors(
+        unfocusedContainerColor = Color(0xFFEEF3F5),
+        focusedContainerColor = Color(0xFFEEF3F5),
+        focusedTextColor = Color.Black,
+        unfocusedTextColor = Color.Black,
+        unfocusedBorderColor = Color(0xFFEEF3F5),
+        focusedBorderColor = Color(0xFF029CCA),
+        focusedLabelColor = Color(0xFF000000),
+        cursorColor = Color(0xFF029CCA),
+        errorContainerColor = Color(0xFFEEF3F5),
+        errorSupportingTextColor = Color(0xFFC00404)
+    )
+}
+
+//cores para os campos de trexto da tela de atualizar email e senha
+object ColorsTextFieldAtualizarEmailSenha {
+    @Composable
+    fun colorsTextField() = OutlinedTextFieldDefaults.colors(
+        unfocusedContainerColor = Color(0xFFEEF3F5),
+        focusedContainerColor = Color(0xFFEEF3F5),
+        focusedTextColor = Color.Black,
+        unfocusedTextColor = Color.Black,
+        unfocusedBorderColor = Color(0xFFEEF3F5),
+        focusedBorderColor = Color.DarkGray,
+        focusedLabelColor = Color(0xFF000000),
+        cursorColor = Color(0xFF029CCA),
+        errorContainerColor = Color(0xFFEEF3F5),
+        errorSupportingTextColor = Color(0xFFC00404)
+    )
+
+}
+
 object ColorsExposedDropdownMenu {
     @Composable
     fun customColorsExposedDropdownMenu() = OutlinedTextFieldDefaults.colors(
@@ -43,7 +78,7 @@ object ColorsExposedDropdownMenu {
     )
 }
 
-object FiltrosList{
+object FiltrosList {
     val coresList = listOf(
         "Cor",
         "Amarelo",

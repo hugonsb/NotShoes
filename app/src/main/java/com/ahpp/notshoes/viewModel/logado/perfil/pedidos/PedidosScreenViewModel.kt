@@ -1,10 +1,10 @@
-package com.ahpp.notshoes.viewModel.logado.perfil
+package com.ahpp.notshoes.viewModel.logado.perfil.pedidos
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahpp.notshoes.constantes.clienteLogado
 import com.ahpp.notshoes.data.cliente.getPedidos
-import com.ahpp.notshoes.states.logado.perfil.PedidosScreenState
+import com.ahpp.notshoes.states.logado.perfil.pedidos.PedidosScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

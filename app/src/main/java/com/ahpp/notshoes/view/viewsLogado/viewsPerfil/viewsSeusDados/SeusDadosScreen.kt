@@ -36,7 +36,6 @@ import com.ahpp.notshoes.navigation.canGoBack
 
 @Composable
 fun SeusDadosScreen(navControllerPerfil: NavController, navControllerSeusDados: NavController) {
-
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(
             modifier = Modifier
@@ -200,5 +199,4 @@ fun SeusDadosScreen(navControllerPerfil: NavController, navControllerSeusDados: 
             )
         }
     }
-
 }

@@ -5,10 +5,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ahpp.notshoes.navigation.logado.perfil.seusDados.NavManagerSeusDadosScreen
 import com.ahpp.notshoes.view.viewsLogado.viewsPerfil.PerfilScreen
 import com.ahpp.notshoes.view.viewsLogado.viewsPerfil.viewsEnderecos.EnderecosScreenController
 import com.ahpp.notshoes.view.viewsLogado.viewsPerfil.viewsPedidos.PedidosScreen
-import com.ahpp.notshoes.view.viewsLogado.viewsPerfil.viewsSeusDados.SeusDadosScreenController
 import com.ahpp.notshoes.view.viewsLogado.viewsPerfil.viewsSobreApp.SobreAppScreen
 
 @Composable
@@ -23,7 +23,7 @@ fun NavManagerPerfilScreen(navControllerLogin: NavController) {
             PedidosScreen(navControllerPerfil)
         }
         composable(route = "seusDadosScreen") {
-            SeusDadosScreenController(navControllerPerfil)
+            NavManagerSeusDadosScreen(navControllerPerfil)
         }
         composable(route = "enderecosScreen") {
             EnderecosScreenController(navControllerPerfil)

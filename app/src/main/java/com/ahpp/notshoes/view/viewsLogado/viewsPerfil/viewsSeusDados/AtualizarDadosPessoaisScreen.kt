@@ -23,13 +23,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,58 +39,41 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ahpp.notshoes.R
+import com.ahpp.notshoes.constantes.ColorsTextFieldDadosPessoais
 import com.ahpp.notshoes.data.cliente.AtualizarDadosPessoaisCliente
-import com.ahpp.notshoes.data.cliente.getCliente
+import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.corPlaceholder
 import com.ahpp.notshoes.util.RadioButtonButtonPersonalizado
-import com.ahpp.notshoes.navigation.canGoBack
-import com.ahpp.notshoes.util.validacao.ValidarCamposDados
 import com.ahpp.notshoes.util.conexao.possuiConexao
+import com.ahpp.notshoes.util.validacao.ValidarCamposDados
 import com.ahpp.notshoes.util.visualTransformation.CpfVisualTransformation
 import com.ahpp.notshoes.util.visualTransformation.PhoneVisualTransformation
-import com.ahpp.notshoes.constantes.clienteLogado
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.ahpp.notshoes.viewModel.logado.perfil.seusDados.AtualizarDadosPessoaisScreenViewModel
 import java.io.IOException
 
 @Composable
-fun AtualizarDadosPessoaisScreen(navControllerSeusDados: NavController) {
-    val scope = rememberCoroutineScope()
-    fun atualizarClienteLogado() {
-        scope.launch(Dispatchers.IO) {
-            clienteLogado =
-                getCliente(clienteLogado.idCliente)
-        }
-    }
+fun AtualizarDadosPessoaisScreen(
+    navControllerSeusDados: NavController,
+    atualizarDadosPessoaisScreenViewModel: AtualizarDadosPessoaisScreenViewModel = viewModel()
+) {
+    val uiState =
+        atualizarDadosPessoaisScreenViewModel.atualizarDadosPessoaisScreenState.collectAsState()
 
-    val ctx = LocalContext.current
-
-    var enabledButton by remember { mutableStateOf(true) }
-
-    var nomeNovo by remember { mutableStateOf(clienteLogado.nome) }
-    var cpfNovo by remember { mutableStateOf(clienteLogado.cpf) }
-    var telefoneNovo by remember { mutableStateOf(clienteLogado.telefoneContato) }
-    var generoNovo by remember { mutableStateOf(clienteLogado.genero) }
+    val nomeNovo = uiState.value.nomeNovo
+    val cpfNovo = uiState.value.cpfNovo
+    val telefoneNovo = uiState.value.telefoneContatoNovo
+    val generoNovo = uiState.value.generoNovo
 
     var nomeValido by remember { mutableStateOf(true) }
     var cpfValido by remember { mutableStateOf(true) }
     var telefoneValido by remember { mutableStateOf(true) }
 
-    val colorsTextField = OutlinedTextFieldDefaults.colors(
-        unfocusedContainerColor = Color(0xFFEEF3F5),
-        focusedContainerColor = Color(0xFFEEF3F5),
-        focusedTextColor = Color.Black,
-        unfocusedTextColor = Color.Black,
-        unfocusedBorderColor = Color(0xFFEEF3F5),
-        focusedBorderColor = Color(0xFF029CCA),
-        focusedLabelColor = Color(0xFF000000),
-        cursorColor = Color(0xFF029CCA),
-        errorContainerColor = Color(0xFFEEF3F5),
-        errorSupportingTextColor = Color(0xFFC00404)
-    )
+    val ctx = LocalContext.current
+    var enabledButton by remember { mutableStateOf(true) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(
@@ -151,7 +133,7 @@ fun AtualizarDadosPessoaisScreen(navControllerSeusDados: NavController) {
                 value = nomeNovo,
                 onValueChange = {
                     if (it.length <= 255) {
-                        nomeNovo = it
+                        atualizarDadosPessoaisScreenViewModel.setNome(it)
                     }
                     nomeValido = true
                 },
@@ -171,7 +153,7 @@ fun AtualizarDadosPessoaisScreen(navControllerSeusDados: NavController) {
                     .padding(top = 10.dp, start = 10.dp, end = 10.dp)
                     .fillMaxWidth(),
                 maxLines = 1,
-                colors = colorsTextField
+                colors = ColorsTextFieldDadosPessoais.colorsTextField()
             )
 
             Row(modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp)) {
@@ -186,7 +168,7 @@ fun AtualizarDadosPessoaisScreen(navControllerSeusDados: NavController) {
                 value = if (cpfNovo == "") "" else cpfNovo,
                 onValueChange = {
                     if (it.length <= 11) {
-                        cpfNovo = it
+                        atualizarDadosPessoaisScreenViewModel.setCpf(it)
                     }
                     cpfValido = true
                 },
@@ -207,7 +189,7 @@ fun AtualizarDadosPessoaisScreen(navControllerSeusDados: NavController) {
                     .padding(top = 10.dp, start = 10.dp, end = 10.dp)
                     .fillMaxWidth(),
                 maxLines = 1,
-                colors = colorsTextField,
+                colors = ColorsTextFieldDadosPessoais.colorsTextField(),
                 visualTransformation = CpfVisualTransformation()
             )
 
@@ -223,7 +205,7 @@ fun AtualizarDadosPessoaisScreen(navControllerSeusDados: NavController) {
                 value = if (telefoneNovo == "") "" else telefoneNovo,
                 onValueChange = {
                     if (it.length < 12) {
-                        telefoneNovo = it
+                        atualizarDadosPessoaisScreenViewModel.setTelefone(it)
                     }
                     telefoneValido = true
                 },
@@ -244,7 +226,7 @@ fun AtualizarDadosPessoaisScreen(navControllerSeusDados: NavController) {
                     .padding(top = 10.dp, start = 10.dp, end = 10.dp)
                     .fillMaxWidth(),
                 maxLines = 1,
-                colors = colorsTextField,
+                colors = ColorsTextFieldDadosPessoais.colorsTextField(),
                 visualTransformation = PhoneVisualTransformation()
             )
 
@@ -264,17 +246,17 @@ fun AtualizarDadosPessoaisScreen(navControllerSeusDados: NavController) {
                 RadioButtonButtonPersonalizado(
                     text = "Masculino",
                     isSelected = generoNovo == "M",
-                    onClick = { generoNovo = "M" }
+                    onClick = { atualizarDadosPessoaisScreenViewModel.setGenero("M") }
                 )
                 RadioButtonButtonPersonalizado(
                     text = "Feminino",
                     isSelected = generoNovo == "F",
-                    onClick = { generoNovo = "F" }
+                    onClick = { atualizarDadosPessoaisScreenViewModel.setGenero("F") }
                 )
                 RadioButtonButtonPersonalizado(
                     text = "Prefiro não informar",
                     isSelected = generoNovo == "0",
-                    onClick = { generoNovo = "0" }
+                    onClick = { atualizarDadosPessoaisScreenViewModel.setGenero("0") }
                 )
             }
 
@@ -304,7 +286,7 @@ fun AtualizarDadosPessoaisScreen(navControllerSeusDados: NavController) {
                                     AtualizarDadosPessoaisCliente.Callback {
                                     override fun onSuccess(code: String) {
                                         //Log.i("CODIGO RECEBIDO{ALTERAR DADOS CLIENTE}: ", code)
-                                        atualizarClienteLogado()
+                                        atualizarDadosPessoaisScreenViewModel.atualizarClienteLogado()
                                         Handler(Looper.getMainLooper()).post {
                                             Toast.makeText(
                                                 ctx,

@@ -23,13 +23,12 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,39 +42,32 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ahpp.notshoes.R
+import com.ahpp.notshoes.constantes.ColorsTextFieldAtualizarEmailSenha
 import com.ahpp.notshoes.data.cliente.AtualizarSenhaCliente
-import com.ahpp.notshoes.data.cliente.getCliente
+import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.corPlaceholder
-import com.ahpp.notshoes.navigation.canGoBack
-import com.ahpp.notshoes.util.validacao.ValidarCamposDados
 import com.ahpp.notshoes.util.conexao.possuiConexao
-import com.ahpp.notshoes.constantes.clienteLogado
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.ahpp.notshoes.util.validacao.ValidarCamposDados
+import com.ahpp.notshoes.viewModel.logado.perfil.seusDados.AtualizarSenhaScreenViewModel
 import java.io.IOException
-import java.security.MessageDigest
 import java.util.Locale
 
 @Composable
-fun AtualizarSenhaScreen(navControllerSeusDados: NavController) {
-    val scope = rememberCoroutineScope()
-    fun atualizarClienteLogado() {
-        scope.launch(Dispatchers.IO) {
-            clienteLogado =
-                getCliente(clienteLogado.idCliente)
-        }
-    }
+fun AtualizarSenhaScreen(
+    navControllerSeusDados: NavController,
+    atualizarSenhaScreenViewModel: AtualizarSenhaScreenViewModel = viewModel()
+) {
+
+    val uiState = atualizarSenhaScreenViewModel.atualizarSenhaScreenState.collectAsState()
+    val senhaAtual = uiState.value.senhaAtual
+    val senhaNova = uiState.value.senhaNova
 
     val ctx = LocalContext.current
-
     var enabledButton by remember { mutableStateOf(true) }
-
-    var senhaAtual by remember { mutableStateOf("") }
-    var senhaNova by remember { mutableStateOf("") }
-
     var senhaAtualCorreta by remember { mutableStateOf(true) }
     var senhaAtualValida by remember { mutableStateOf(true) }
     var senhaNovaValida by remember { mutableStateOf(true) }
@@ -95,18 +87,7 @@ fun AtualizarSenhaScreen(navControllerSeusDados: NavController) {
     else
         painterResource(id = R.drawable.baseline_visibility_off_24)
 
-    val colorsTextFields = OutlinedTextFieldDefaults.colors(
-        unfocusedContainerColor = Color(0xFFEEF3F5),
-        focusedContainerColor = Color(0xFFEEF3F5),
-        focusedTextColor = Color.Black,
-        unfocusedTextColor = Color.Black,
-        unfocusedBorderColor = Color.Transparent,
-        focusedBorderColor = Color.DarkGray,
-        focusedLabelColor = Color(0xFF000000),
-        cursorColor = Color(0xFF029CCA),
-        errorContainerColor = Color(0xFFEEF3F5),
-        errorSupportingTextColor = Color(0xFFC00404)
-    )
+    val colorsTextFields = ColorsTextFieldAtualizarEmailSenha.colorsTextField()
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(
@@ -164,7 +145,7 @@ fun AtualizarSenhaScreen(navControllerSeusDados: NavController) {
                 value = senhaAtual,
                 onValueChange = {
                     if (it.length <= 255) {
-                        senhaAtual = it
+                        atualizarSenhaScreenViewModel.setSenhaAtual(it)
                     }
                     senhaAtualValida = ValidarCamposDados.validarSenha(senhaAtual)
                     senhaAtualCorreta = true
@@ -215,7 +196,7 @@ fun AtualizarSenhaScreen(navControllerSeusDados: NavController) {
                 value = senhaNova,
                 onValueChange = {
                     if (it.length <= 255) {
-                        senhaNova = it
+                        atualizarSenhaScreenViewModel.setNovaSenha(it)
                     }
                     senhaNovaValida = ValidarCamposDados.validarSenha(senhaNova)
                 },
@@ -260,10 +241,11 @@ fun AtualizarSenhaScreen(navControllerSeusDados: NavController) {
 
             ElevatedButton(
                 onClick = {
+                    val senhaAtualCriptografada: String =
+                        atualizarSenhaScreenViewModel.md5Hash(senhaAtual)
 
-                    val senhaAtualCriptografada: String = md5Hash(senhaAtual)
-
-                    senhaAtualCorreta = senhaAtualCriptografada == clienteLogado.senha
+                    senhaAtualCorreta =
+                        atualizarSenhaScreenViewModel.senhaAtualCorreta(senhaAtualCriptografada)
 
                     senhaAtualValida = ValidarCamposDados.validarSenha(senhaAtual)
                     senhaNovaValida = ValidarCamposDados.validarSenha(senhaNova)
@@ -282,7 +264,7 @@ fun AtualizarSenhaScreen(navControllerSeusDados: NavController) {
                                     //Log.i("CODIGO RECEBIDO {ALTERAR SENHA}: ", code)
 
                                     if (code == "201") {
-                                        atualizarClienteLogado()
+                                        atualizarSenhaScreenViewModel.atualizarClienteLogado()
                                         Handler(Looper.getMainLooper()).post {
                                             Toast.makeText(
                                                 ctx,
@@ -347,10 +329,4 @@ fun AtualizarSenhaScreen(navControllerSeusDados: NavController) {
             )
         }
     }
-}
-
-fun md5Hash(input: String): String {
-    val md = MessageDigest.getInstance("MD5")
-    val bytes = md.digest(input.toByteArray())
-    return bytes.joinToString("") { "%02x".format(it) }
 }

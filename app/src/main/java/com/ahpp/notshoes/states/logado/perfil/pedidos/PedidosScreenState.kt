@@ -1,4 +1,4 @@
-package com.ahpp.notshoes.states.logado.perfil
+package com.ahpp.notshoes.states.logado.perfil.pedidos
 
 import com.ahpp.notshoes.model.Venda
 

@@ -23,10 +23,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,37 +37,32 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ahpp.notshoes.R
+import com.ahpp.notshoes.constantes.ColorsTextFieldAtualizarEmailSenha
+import com.ahpp.notshoes.constantes.clienteLogado
 import com.ahpp.notshoes.data.cliente.AtualizarEmailCliente
-import com.ahpp.notshoes.data.cliente.getCliente
+import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.corPlaceholder
-import com.ahpp.notshoes.navigation.canGoBack
-import com.ahpp.notshoes.util.validacao.ValidarCamposDados
 import com.ahpp.notshoes.util.conexao.possuiConexao
-import com.ahpp.notshoes.constantes.clienteLogado
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.ahpp.notshoes.util.validacao.ValidarCamposDados
+import com.ahpp.notshoes.viewModel.logado.perfil.seusDados.AtualizarEmailScreenViewModel
 import java.io.IOException
 import java.util.Locale
 
 @Composable
-fun AtualizarEmailScreen(navControllerSeusDados: NavController) {
+fun AtualizarEmailScreen(
+    navControllerSeusDados: NavController,
+    atualizarEmailScreenViewModel: AtualizarEmailScreenViewModel = viewModel()
+) {
 
-    val scope = rememberCoroutineScope()
-    fun atualizarClienteLogado() {
-        scope.launch(Dispatchers.IO) {
-            clienteLogado =
-                getCliente(clienteLogado.idCliente)
-        }
-    }
+    val uiState = atualizarEmailScreenViewModel.atualizarEmailScreenState.collectAsState()
+    val emailNovo = uiState.value.emailNovo
 
     val ctx = LocalContext.current
-
     var enabledButton by remember { mutableStateOf(true) }
-
-    var emailNovo by remember { mutableStateOf("") }
     var emailValido by remember { mutableStateOf(true) }
 
     var codigoStatusAlteracao by remember { mutableStateOf("201") }
@@ -142,7 +137,7 @@ fun AtualizarEmailScreen(navControllerSeusDados: NavController) {
                 value = emailNovo,
                 onValueChange = {
                     if (it.length <= 255) {
-                        emailNovo = it
+                        atualizarEmailScreenViewModel.setNovoEmail(it)
                     }
                     emailValido = ValidarCamposDados.validarEmail(emailNovo)
                     codigoStatusAlteracao = "201"
@@ -159,23 +154,17 @@ fun AtualizarEmailScreen(navControllerSeusDados: NavController) {
                         Text(text = stringResource(id = R.string.email_ja_cadastrado))
                     }
                 },
-                placeholder = { Text(text = stringResource(R.string.digite_um_novo_e_mail), color = corPlaceholder) },
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.digite_um_novo_e_mail),
+                        color = corPlaceholder
+                    )
+                },
                 maxLines = 1,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 10.dp, end = 10.dp, top = 10.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = Color(0xFFEEF3F5),
-                    focusedContainerColor = Color(0xFFEEF3F5),
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black,
-                    unfocusedBorderColor = Color(0xFFEEF3F5),
-                    focusedBorderColor = Color.DarkGray,
-                    focusedLabelColor = Color(0xFF000000),
-                    cursorColor = Color(0xFF029CCA),
-                    errorContainerColor = Color(0xFFEEF3F5),
-                    errorSupportingTextColor = Color(0xFFC00404)
-                )
+                colors = ColorsTextFieldAtualizarEmailSenha.colorsTextField()
             )
 
             Spacer(Modifier.padding(top = 10.dp))
@@ -190,7 +179,6 @@ fun AtualizarEmailScreen(navControllerSeusDados: NavController) {
                         if (possuiConexao(ctx)) {
                             val atualizarEmailCliente =
                                 AtualizarEmailCliente(emailNovo)
-
                             atualizarEmailCliente.sendAtualizarData(object :
                                 AtualizarEmailCliente.Callback {
                                 override fun onSuccess(code: String) {
@@ -200,7 +188,7 @@ fun AtualizarEmailScreen(navControllerSeusDados: NavController) {
                                     //Log.i("CODIGO RECEBIDO {ALTERAR EMAIL}: ", code)
 
                                     if (code == "201") {
-                                        atualizarClienteLogado()
+                                        atualizarEmailScreenViewModel.atualizarClienteLogado()
                                         Handler(Looper.getMainLooper()).post {
                                             Toast.makeText(
                                                 ctx,
