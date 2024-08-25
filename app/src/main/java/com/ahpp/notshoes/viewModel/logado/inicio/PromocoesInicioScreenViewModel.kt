@@ -15,9 +15,14 @@ class PromocoesInicioScreenViewModel(
 ) : ViewModel() {
 
     private val _promocoesInicioScreenState = MutableStateFlow(PromocoesInicioScreenState())
-    val promocoesInicioScreenState: StateFlow<PromocoesInicioScreenState> = _promocoesInicioScreenState.asStateFlow()
+    val promocoesInicioScreenState: StateFlow<PromocoesInicioScreenState> =
+        _promocoesInicioScreenState.asStateFlow()
 
     init {
+        getPromocoes()
+    }
+
+    fun getPromocoes() {
         viewModelScope.launch {
             _promocoesInicioScreenState.update { currentState ->
                 currentState.copy(

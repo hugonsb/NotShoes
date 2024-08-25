@@ -79,6 +79,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.ahpp.notshoes.R
+import com.ahpp.notshoes.model.Produto
 import com.ahpp.notshoes.ui.theme.backgroundBarraPesquisa
 import com.ahpp.notshoes.ui.theme.branco
 import com.ahpp.notshoes.ui.theme.verde
@@ -92,7 +93,13 @@ import org.koin.androidx.compose.koinViewModel
 import java.text.NumberFormat
 
 @Composable
-fun InicioScreen(navControllerInicio: NavHostController, navBarController: NavHostController) {
+fun InicioScreen(
+    navControllerInicio: NavHostController, navBarController: NavHostController,
+    promocoesInicioScreenViewModel: PromocoesInicioScreenViewModel = koinViewModel<PromocoesInicioScreenViewModel>()
+) {
+
+    val uiState by promocoesInicioScreenViewModel.promocoesInicioScreenState.collectAsState()
+    val ofertas = uiState.ofertas
 
     var internetCheker by remember { mutableStateOf(false) }
 
@@ -140,6 +147,7 @@ fun InicioScreen(navControllerInicio: NavHostController, navBarController: NavHo
     if (!internetCheker) {
         SemConexaoScreen(onBackPressed = {
             internetCheker = possuiConexao(ctx)
+            if (internetCheker) promocoesInicioScreenViewModel.getPromocoes()
         })
     } else if (clickedProduto) {
         ProdutoScreen(
@@ -155,7 +163,7 @@ fun InicioScreen(navControllerInicio: NavHostController, navBarController: NavHo
             PagerDescontos(navControllerInicio)
             PagerFiltroValores(navControllerInicio)
             FiltrosTelaInicial(navControllerInicio, navBarController)
-            Promocoes(onPromocaoClicked = { clickedProduto = true })
+            Promocoes(onPromocaoClicked = { clickedProduto = true }, ofertas)
             NavegarPorMarcas(navControllerInicio)
         }
     }
@@ -521,11 +529,8 @@ fun FiltrosTelaInicial(
 @Composable
 fun Promocoes(
     onPromocaoClicked: () -> Unit,
-    promocoesInicioScreenViewModel: PromocoesInicioScreenViewModel = koinViewModel<PromocoesInicioScreenViewModel>()
+    ofertas: List<Produto>,
 ) {
-    val uiState by promocoesInicioScreenViewModel.promocoesInicioScreenState.collectAsState()
-    val ofertas = uiState.ofertas
-
     val localeBR = java.util.Locale("pt", "BR")
     val numberFormat = NumberFormat.getCurrencyInstance(localeBR)
 

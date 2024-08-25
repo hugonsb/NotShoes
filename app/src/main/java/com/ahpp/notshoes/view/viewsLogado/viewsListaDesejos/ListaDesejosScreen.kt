@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,7 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ahpp.notshoes.R
 import com.ahpp.notshoes.ui.theme.azulEscuro
-import com.ahpp.notshoes.util.cards.CardListaDesejos
+import com.ahpp.notshoes.view.screensReutilizaveis.LoadingScreen
+import com.ahpp.notshoes.view.cards.CardListaDesejos
 import com.ahpp.notshoes.util.conexao.possuiConexao
 import com.ahpp.notshoes.view.screensReutilizaveis.ProdutoScreen
 import com.ahpp.notshoes.view.screensReutilizaveis.SemConexaoScreen
@@ -54,6 +54,7 @@ fun ListaDeDesejoscreen(listaDesejosViewModel: ListaDesejosViewModel = koinViewM
     if (!internetCheker) {
         SemConexaoScreen(onBackPressed = {
             internetCheker = possuiConexao(ctx)
+            if (internetCheker) listaDesejosViewModel.atualizarListaDesejos()
         })
     } else if (clickedProduto) {
         ProdutoScreen(onBackPressed = {
@@ -82,14 +83,7 @@ fun ListaDesejosContent(
     val listState = rememberLazyListState()
 
     if (uiState.isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+        LoadingScreen()
     } else {
         Column(
             modifier = Modifier

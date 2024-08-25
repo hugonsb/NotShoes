@@ -1,4 +1,4 @@
-package com.ahpp.notshoes.util.cards
+package com.ahpp.notshoes.view.cards
 
 import android.annotation.SuppressLint
 import android.widget.Toast

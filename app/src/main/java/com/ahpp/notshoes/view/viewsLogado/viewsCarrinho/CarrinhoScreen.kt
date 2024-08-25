@@ -22,7 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -53,7 +52,8 @@ import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.barraValoresCarrinho
 import com.ahpp.notshoes.ui.theme.textoValorEconomizado
 import com.ahpp.notshoes.ui.theme.verde
-import com.ahpp.notshoes.util.cards.CardItemCarrinho
+import com.ahpp.notshoes.view.screensReutilizaveis.LoadingScreen
+import com.ahpp.notshoes.view.cards.CardItemCarrinho
 import com.ahpp.notshoes.util.conexao.possuiConexao
 import com.ahpp.notshoes.view.screensReutilizaveis.SemConexaoScreen
 import com.ahpp.notshoes.viewModel.logado.carrinho.CarrinhoScreenViewModel
@@ -74,17 +74,11 @@ fun CarrinhoScreen(
     val uiState by carrinhoScreenViewModel.carrinhoScreenState.collectAsState()
 
     if (uiState.isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+        LoadingScreen()
     } else if (!internetCheker) {
         SemConexaoScreen(onBackPressed = {
             internetCheker = possuiConexao(ctx)
+            if (internetCheker) carrinhoScreenViewModel.atualizarCarrinho()
         })
     } else {
         CarrinhoContent(navControllerCarrinho, carrinhoScreenViewModel, ctx)

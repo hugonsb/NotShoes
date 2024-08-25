@@ -28,6 +28,9 @@ class ListaDesejosViewModel(
 
     fun atualizarListaDesejos() {
         viewModelScope.launch {
+            _listaDesejosState.value = _listaDesejosState.value.copy(
+                isLoading = true
+            )
             _listaDesejosState.update { currentState ->
                 currentState.copy(
                     produtosList = produtoRepository.getProdutosListaDesejos(clienteLogado.idListaDesejos),

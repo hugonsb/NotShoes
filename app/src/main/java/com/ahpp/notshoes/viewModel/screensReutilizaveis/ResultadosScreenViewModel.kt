@@ -47,6 +47,9 @@ class ResultadosScreenViewModel(
 
     fun buscarProduto(ctx: Context, valorBusca: String, tipoBusca: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            _resultadosScreenState.value = _resultadosScreenState.value.copy(
+                isLoading = true
+            )
             if (!possuiConexao(ctx)) {
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(ctx, R.string.verifique_conexao_internet, Toast.LENGTH_SHORT)

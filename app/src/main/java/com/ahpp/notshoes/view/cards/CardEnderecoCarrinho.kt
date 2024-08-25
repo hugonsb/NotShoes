@@ -1,4 +1,4 @@
-package com.ahpp.notshoes.util.cards
+package com.ahpp.notshoes.view.cards
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

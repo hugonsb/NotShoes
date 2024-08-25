@@ -8,7 +8,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -32,7 +31,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -63,8 +61,9 @@ import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.branco
 import com.ahpp.notshoes.ui.theme.verde
+import com.ahpp.notshoes.view.screensReutilizaveis.LoadingScreen
 import com.ahpp.notshoes.util.RadioButtonButtonPersonalizado
-import com.ahpp.notshoes.util.cards.CardEnderecoCarrinho
+import com.ahpp.notshoes.view.cards.CardEnderecoCarrinho
 import com.ahpp.notshoes.util.conexao.possuiConexao
 import com.ahpp.notshoes.view.screensReutilizaveis.SemConexaoScreen
 import com.ahpp.notshoes.viewModel.logado.carrinho.CarrinhoScreenViewModel
@@ -87,19 +86,11 @@ fun FinalizarPedidoScreen(
     val uiState by carrinhoScreenViewModel.carrinhoScreenState.collectAsState()
 
     if (uiState.isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    branco
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+        LoadingScreen()
     } else if (!internetCheker) {
         SemConexaoScreen(onBackPressed = {
             internetCheker = possuiConexao(ctx)
+            if (internetCheker) carrinhoScreenViewModel.atualizarCarrinho()
         })
     } else {
         FinalizarPedidoContent(carrinhoScreenViewModel, navControllerCarrinho, ctx)

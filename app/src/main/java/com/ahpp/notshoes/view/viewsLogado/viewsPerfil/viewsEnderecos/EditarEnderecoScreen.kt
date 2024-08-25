@@ -31,13 +31,12 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,44 +48,40 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ahpp.notshoes.R
-import com.ahpp.notshoes.data.cliente.getCliente
+import com.ahpp.notshoes.constantes.ColorsTextFieldDadosPessoais
+import com.ahpp.notshoes.constantes.EstadosList
+import com.ahpp.notshoes.constantes.clienteLogado
 import com.ahpp.notshoes.data.endereco.EditarEnderecoCliente
+import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.corPlaceholder
-import com.ahpp.notshoes.navigation.canGoBack
-import com.ahpp.notshoes.util.validacao.ValidarCamposEndereco
 import com.ahpp.notshoes.util.conexao.possuiConexao
+import com.ahpp.notshoes.util.validacao.ValidarCamposEndereco
 import com.ahpp.notshoes.util.visualTransformation.CepVisualTransformation
-import com.ahpp.notshoes.constantes.clienteLogado
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.ahpp.notshoes.viewModel.logado.perfil.enderecos.EditarEnderecoScreenViewModel
 import java.io.IOException
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditarEnderecoScreen(navControllerEnderecos: NavController) {
+fun EditarEnderecoScreen(
+    navControllerEnderecos: NavController,
+    editarEnderecoScreenViewModel: EditarEnderecoScreenViewModel = viewModel()
+) {
 
-    val scope = rememberCoroutineScope()
-    fun atualizarClienteLogado() {
-        scope.launch(Dispatchers.IO) {
-            clienteLogado =
-                getCliente(clienteLogado.idCliente)
-        }
-    }
+    val uiState = editarEnderecoScreenViewModel.editarEnderecoScreenState.collectAsState()
+    val cep = uiState.value.cep
+    val endereco = uiState.value.endereco
+    val numero = uiState.value.numero
+    val bairro = uiState.value.bairro
+    val cidade = uiState.value.cidade
+    val complemento = uiState.value.complemento
 
     val ctx = LocalContext.current
-
     var enabledButton by remember { mutableStateOf(true) }
-
-    var cep by remember { mutableStateOf(enderecoSelecionado.cep) }
-    var endereco by remember { mutableStateOf(enderecoSelecionado.endereco) }
-    var numero by remember { mutableStateOf(enderecoSelecionado.numero.toString()) }
-    var complemento by remember { mutableStateOf(enderecoSelecionado.complemento) }
-    var bairro by remember { mutableStateOf(enderecoSelecionado.bairro) }
-    var cidade by remember { mutableStateOf(enderecoSelecionado.cidade) }
 
     var cepValido by remember { mutableStateOf(true) }
     var enderecoValido by remember { mutableStateOf(true) }
@@ -95,53 +90,13 @@ fun EditarEnderecoScreen(navControllerEnderecos: NavController) {
     var estadoValido by remember { mutableStateOf(true) }
     var cidadeValido by remember { mutableStateOf(true) }
 
-    val estadosList = listOf(
-        "Estado",
-        "Acre",
-        "Alagoas",
-        "Amapá",
-        "Amazonas",
-        "Bahia",
-        "Ceará",
-        "Distrito Federal",
-        "Espírito Santo",
-        "Goiás",
-        "Maranhão",
-        "Mato Grosso",
-        "Mato Grosso do Sul",
-        "Minas Gerais",
-        "Pará",
-        "Paraíba",
-        "Paraná",
-        "Pernambuco",
-        "Piauí",
-        "Rio de Janeiro",
-        "Rio Grande do Norte",
-        "Rio Grande do Sul",
-        "Rondônia",
-        "Roraima",
-        "Santa Catarina",
-        "São Paulo",
-        "Sergipe",
-        "Tocantins"
-    )
+    val estadosList = EstadosList.estados
     var expanded by remember { mutableStateOf(false) }
     var estado by remember { mutableStateOf(estadosList[estadosList.indexOf(enderecoSelecionado.estado)]) }
 
     var checkedTornarEnderecoPrincipal by remember { mutableStateOf(false) }
 
-    val colorsTextField = OutlinedTextFieldDefaults.colors(
-        unfocusedContainerColor = Color(0xFFEEF3F5),
-        focusedContainerColor = Color(0xFFEEF3F5),
-        focusedTextColor = Color.Black,
-        unfocusedTextColor = Color.Black,
-        unfocusedBorderColor = Color(0xFFEEF3F5),
-        focusedBorderColor = Color(0xFF029CCA),
-        focusedLabelColor = Color(0xFF000000),
-        cursorColor = Color(0xFF029CCA),
-        errorContainerColor = Color(0xFFEEF3F5),
-        errorSupportingTextColor = Color(0xFFC00404)
-    )
+    val colorsTextField = ColorsTextFieldDadosPessoais.colorsTextField()
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(
@@ -197,7 +152,7 @@ fun EditarEnderecoScreen(navControllerEnderecos: NavController) {
                 value = cep,
                 onValueChange = {
                     if (it.length <= 8) {
-                        cep = it
+                        editarEnderecoScreenViewModel.setCep(it)
                     }
                     cepValido = true
                 },
@@ -228,7 +183,7 @@ fun EditarEnderecoScreen(navControllerEnderecos: NavController) {
                 value = endereco,
                 onValueChange = {
                     if (it.length <= 255) {
-                        endereco = it
+                        editarEnderecoScreenViewModel.setEndereco(it)
                     }
                     enderecoValido = true
                 },
@@ -258,7 +213,7 @@ fun EditarEnderecoScreen(navControllerEnderecos: NavController) {
                     value = numero,
                     onValueChange = {
                         if (it.length <= 10) {
-                            numero = it
+                            editarEnderecoScreenViewModel.setNumero(it)
                         }
                         numeroValido = true
                     },
@@ -286,7 +241,7 @@ fun EditarEnderecoScreen(navControllerEnderecos: NavController) {
                     value = complemento,
                     onValueChange = {
                         if (it.length <= 255) {
-                            complemento = it
+                            editarEnderecoScreenViewModel.setComplemento(it)
                         }
                     },
                     placeholder = {
@@ -309,7 +264,7 @@ fun EditarEnderecoScreen(navControllerEnderecos: NavController) {
                 value = bairro,
                 onValueChange = {
                     if (it.length <= 255) {
-                        bairro = it
+                        editarEnderecoScreenViewModel.setBairro(it)
                     }
                     bairroValido = true
                 },
@@ -386,7 +341,7 @@ fun EditarEnderecoScreen(navControllerEnderecos: NavController) {
                     value = cidade,
                     onValueChange = {
                         if (it.length <= 255) {
-                            cidade = it
+                            editarEnderecoScreenViewModel.setCidade(it)
                         }
                         cidadeValido = true
                     },
@@ -466,7 +421,7 @@ fun EditarEnderecoScreen(navControllerEnderecos: NavController) {
                                         //Log.i("CODIGO RECEBIDO (sucesso na atualizacao de endereço): ", code)
                                         if (code == "1") {
                                             if (checkedTornarEnderecoPrincipal) {
-                                                atualizarClienteLogado()
+                                                editarEnderecoScreenViewModel.atualizarClienteLogado()
                                             }
                                             Handler(Looper.getMainLooper()).post {
                                                 Toast.makeText(

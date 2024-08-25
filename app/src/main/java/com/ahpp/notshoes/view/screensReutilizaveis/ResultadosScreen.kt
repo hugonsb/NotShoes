@@ -24,7 +24,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -45,6 +44,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,7 +57,8 @@ import com.ahpp.notshoes.constantes.FiltrosList.tamanhosList
 import com.ahpp.notshoes.constantes.FiltrosList.tipoOrdenacaoList
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.branco
-import com.ahpp.notshoes.util.cards.CardResultados
+import com.ahpp.notshoes.util.conexao.possuiConexao
+import com.ahpp.notshoes.view.cards.CardResultados
 import com.ahpp.notshoes.view.viewsLogado.produtoSelecionado
 import com.ahpp.notshoes.viewModel.screensReutilizaveis.ResultadosScreenViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -75,7 +76,7 @@ fun ResultadosScreen(
     }
 ) {
     val ctx = LocalContext.current
-
+    var internetCheker by remember { mutableStateOf(possuiConexao(ctx)) }
     val uiState by resultadosScreenViewModel.resultadosScreenState.collectAsState()
     var clickedProduto by remember { mutableStateOf(false) }
 
@@ -83,20 +84,22 @@ fun ResultadosScreen(
     val listState = rememberLazyListState()
 
     if (uiState.isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+        LoadingScreen()
     } else if (clickedProduto) {
         ProdutoScreen(onBackPressed = { clickedProduto = false },
             favoritado = uiState.favoritos[produtoSelecionado.idProduto] ?: "0",
             onFavoritoClick = { favoritado ->
                 resultadosScreenViewModel.adicionarListaDesejos(favoritado, produtoSelecionado)
             })
+    } else if (!internetCheker) {
+        SemConexaoScreen(onBackPressed = {
+            internetCheker = possuiConexao(ctx)
+            if (internetCheker) resultadosScreenViewModel.buscarProduto(
+                ctx,
+                valorBusca!!,
+                tipoBusca!!
+            )
+        })
     } else {
         val produtosList = uiState.produtosList
         val favoritos = uiState.favoritos
@@ -505,7 +508,8 @@ fun ResultadosScreen(
                         Text(
                             text = stringResource(id = R.string.nenhum_produto_encontrado),
                             fontSize = 28.sp,
-                            color = azulEscuro
+                            color = azulEscuro,
+                            textAlign = TextAlign.Center
                         )
                     }
                 }

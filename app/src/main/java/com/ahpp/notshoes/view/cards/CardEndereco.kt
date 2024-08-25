@@ -1,4 +1,4 @@
-package com.ahpp.notshoes.util.cards
+package com.ahpp.notshoes.view.cards
 
 import android.os.Handler
 import android.os.Looper
@@ -49,7 +49,7 @@ import java.io.IOException
 fun CardEndereco(
     onClickEditarEndereco: () -> Unit,
     enderecoCliente: Endereco,
-    onRemoveEndereco: (Endereco) -> Unit
+    onRemoveEndereco: () -> Unit
 ) {
 
     val scope = rememberCoroutineScope()
@@ -148,7 +148,7 @@ fun CardEndereco(
 
                                     if (code == "1") {
                                         atualizarClienteLogado()
-                                        onRemoveEndereco(enderecoCliente)
+                                        onRemoveEndereco()
                                         Handler(Looper.getMainLooper()).post {
                                             Toast.makeText(
                                                 ctx,

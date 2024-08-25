@@ -30,13 +30,12 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,44 +46,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ahpp.notshoes.R
-import com.ahpp.notshoes.data.cliente.getCliente
+import com.ahpp.notshoes.constantes.ColorsTextFieldDadosPessoais
+import com.ahpp.notshoes.constantes.EstadosList
 import com.ahpp.notshoes.data.endereco.AdicionarEnderecoCliente
+import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.corPlaceholder
-import com.ahpp.notshoes.navigation.canGoBack
-import com.ahpp.notshoes.util.validacao.ValidarCamposEndereco
 import com.ahpp.notshoes.util.conexao.possuiConexao
+import com.ahpp.notshoes.util.validacao.ValidarCamposEndereco
 import com.ahpp.notshoes.util.visualTransformation.CepVisualTransformation
-import com.ahpp.notshoes.constantes.clienteLogado
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.ahpp.notshoes.viewModel.logado.perfil.enderecos.CadastrarEnderecoScreenViewModel
 import java.io.IOException
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
+fun CadastrarEnderecoScreen(
+    navControllerEnderecos: NavController,
+    cadastrarEnderecoScreenViewModel: CadastrarEnderecoScreenViewModel = viewModel()
+) {
 
-    val scope = rememberCoroutineScope()
-    fun atualizarClienteLogado() {
-        scope.launch(Dispatchers.IO) {
-            clienteLogado =
-                getCliente(clienteLogado.idCliente)
-        }
-    }
+    val uiState = cadastrarEnderecoScreenViewModel.cadastrarEnderecoScreenState.collectAsState()
+    val cep = uiState.value.cep
+    val endereco = uiState.value.endereco
+    val numero = uiState.value.numero
+    val bairro = uiState.value.bairro
+    val cidade = uiState.value.cidade
+    val complemento = uiState.value.complemento
 
     val ctx = LocalContext.current
-
     var enabledButton by remember { mutableStateOf(true) }
-
-    var cep by remember { mutableStateOf("") }
-    var endereco by remember { mutableStateOf("") }
-    var numero by remember { mutableStateOf("") }
-    var bairro by remember { mutableStateOf("") }
-    var cidade by remember { mutableStateOf("") }
-    var complemento by remember { mutableStateOf("") }
 
     var cepValido by remember { mutableStateOf(true) }
     var enderecoValido by remember { mutableStateOf(true) }
@@ -93,51 +87,11 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
     var estadoValido by remember { mutableStateOf(true) }
     var cidadeValido by remember { mutableStateOf(true) }
 
-    val estadosList = listOf(
-        "Estado",
-        "Acre",
-        "Alagoas",
-        "Amapá",
-        "Amazonas",
-        "Bahia",
-        "Ceará",
-        "Distrito Federal",
-        "Espírito Santo",
-        "Goiás",
-        "Maranhão",
-        "Mato Grosso",
-        "Mato Grosso do Sul",
-        "Minas Gerais",
-        "Pará",
-        "Paraíba",
-        "Paraná",
-        "Pernambuco",
-        "Piauí",
-        "Rio de Janeiro",
-        "Rio Grande do Norte",
-        "Rio Grande do Sul",
-        "Rondônia",
-        "Roraima",
-        "Santa Catarina",
-        "São Paulo",
-        "Sergipe",
-        "Tocantins"
-    )
-    var expanded by remember { mutableStateOf(false) }
+    val estadosList = EstadosList.estados
+    var expandedEstados by remember { mutableStateOf(false) }
     var estado by remember { mutableStateOf(estadosList[0]) }
 
-    val colorsTextField = OutlinedTextFieldDefaults.colors(
-        unfocusedContainerColor = Color(0xFFEEF3F5),
-        focusedContainerColor = Color(0xFFEEF3F5),
-        focusedTextColor = Color.Black,
-        unfocusedTextColor = Color.Black,
-        unfocusedBorderColor = Color(0xFFEEF3F5),
-        focusedBorderColor = Color(0xFF029CCA),
-        focusedLabelColor = Color(0xFF000000),
-        cursorColor = Color(0xFF029CCA),
-        errorContainerColor = Color(0xFFEEF3F5),
-        errorSupportingTextColor = Color(0xFFC00404)
-    )
+    val colorsTextField = ColorsTextFieldDadosPessoais.colorsTextField()
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(
@@ -193,7 +147,7 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                 value = cep,
                 onValueChange = {
                     if (it.length <= 8) {
-                        cep = it
+                        cadastrarEnderecoScreenViewModel.setCep(it)
                     }
                     cepValido = true
                 },
@@ -219,7 +173,7 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                 value = endereco,
                 onValueChange = {
                     if (it.length <= 255) {
-                        endereco = it
+                        cadastrarEnderecoScreenViewModel.setEndereco(it)
                     }
                     enderecoValido = true
                 },
@@ -229,7 +183,12 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                         Text(text = stringResource(R.string.digite_um_endereco_valido))
                     }
                 },
-                placeholder = { Text(text = stringResource(R.string.endereco), color = corPlaceholder) },
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.endereco),
+                        color = corPlaceholder
+                    )
+                },
                 modifier = Modifier
                     .padding(start = 10.dp, end = 10.dp)
                     .fillMaxWidth(),
@@ -244,7 +203,7 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                     value = numero,
                     onValueChange = {
                         if (it.length <= 10) {
-                            numero = it
+                            cadastrarEnderecoScreenViewModel.setNumero(it)
                         }
                         numeroValido = true
                     },
@@ -272,7 +231,7 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                     value = complemento,
                     onValueChange = {
                         if (it.length <= 255) {
-                            complemento = it
+                            cadastrarEnderecoScreenViewModel.setComplemento(it)
                         }
                     },
                     placeholder = {
@@ -295,7 +254,7 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                 value = bairro,
                 onValueChange = {
                     if (it.length <= 255) {
-                        bairro = it
+                        cadastrarEnderecoScreenViewModel.setBairro(it)
                     }
                     bairroValido = true
                 },
@@ -305,7 +264,12 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                         Text(text = stringResource(R.string.informe_um_bairro_valido))
                     }
                 },
-                placeholder = { Text(text = stringResource(R.string.bairro), color = corPlaceholder) },
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.bairro),
+                        color = corPlaceholder
+                    )
+                },
                 modifier = Modifier
                     .padding(start = 10.dp, end = 10.dp)
                     .fillMaxWidth(),
@@ -321,8 +285,8 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                     modifier = Modifier
                         .padding(start = 10.dp, end = 5.dp)
                         .weight(1f),
-                    expanded = expanded,
-                    onExpandedChange = { expanded = it },
+                    expanded = expandedEstados,
+                    onExpandedChange = { expandedEstados = it },
                 ) {
 
                     OutlinedTextField(
@@ -337,12 +301,12 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                         },
                         readOnly = true,
                         singleLine = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedEstados) },
                         colors = colorsTextField
                     )
                     ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
+                        expanded = expandedEstados,
+                        onDismissRequest = { expandedEstados = false },
                     ) {
                         estadosList.forEach { estadoSelecionado ->
                             DropdownMenuItem(
@@ -354,7 +318,7 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                                 },
                                 onClick = {
                                     estado = estadoSelecionado
-                                    expanded = false
+                                    expandedEstados = false
                                     estadoValido = true
                                 },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
@@ -367,7 +331,7 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                     value = cidade,
                     onValueChange = {
                         if (it.length <= 255) {
-                            cidade = it
+                            cadastrarEnderecoScreenViewModel.setCidade(it)
                         }
                         cidadeValido = true
                     },
@@ -426,7 +390,7 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                                     override fun onSuccess(code: String) {
                                         //Log.i("CODIGO RECEBIDO (sucesso no cadastro de endereço): ", code)
                                         if (code == "1") {
-                                            atualizarClienteLogado()
+                                            cadastrarEnderecoScreenViewModel.atualizarClienteLogado()
                                             Handler(Looper.getMainLooper()).post {
                                                 Toast.makeText(
                                                     ctx,
@@ -436,7 +400,6 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                                                 navControllerEnderecos.popBackStack()
                                             }
                                         }
-
                                     }
 
                                     override fun onFailure(e: IOException) {
@@ -444,7 +407,11 @@ fun CadastrarEnderecoScreen(navControllerEnderecos: NavController) {
                                         // não é possível mostrar um Toast de um Thread
                                         // que não seja UI, então é feito dessa forma
                                         Handler(Looper.getMainLooper()).post {
-                                            Toast.makeText(ctx, R.string.erro_rede, Toast.LENGTH_SHORT)
+                                            Toast.makeText(
+                                                ctx,
+                                                R.string.erro_rede,
+                                                Toast.LENGTH_SHORT
+                                            )
                                                 .show()
                                         }
                                         Log.e("Erro: ", e.message.toString())

@@ -29,7 +29,8 @@ object CustomTextFieldColors {
     )
 }
 
-//cores para os campos de trexto da tela de atualizar dados pessoais
+//cores para os campos de texto da tela de atualizar dados pessoais
+//e cadastrar endereco
 object ColorsTextFieldDadosPessoais {
     @Composable
     fun colorsTextField() = OutlinedTextFieldDefaults.colors(
@@ -46,7 +47,7 @@ object ColorsTextFieldDadosPessoais {
     )
 }
 
-//cores para os campos de trexto da tela de atualizar email e senha
+//cores para os campos de texto da tela de atualizar email e senha
 object ColorsTextFieldAtualizarEmailSenha {
     @Composable
     fun colorsTextField() = OutlinedTextFieldDefaults.colors(
@@ -143,5 +144,38 @@ object FiltrosList {
         "Menor preço",
         "Maior preço",
         "Ofertas",
+    )
+}
+
+object EstadosList {
+    val estados = listOf(
+        "Estado",
+        "Acre",
+        "Alagoas",
+        "Amapá",
+        "Amazonas",
+        "Bahia",
+        "Ceará",
+        "Distrito Federal",
+        "Espírito Santo",
+        "Goiás",
+        "Maranhão",
+        "Mato Grosso",
+        "Mato Grosso do Sul",
+        "Minas Gerais",
+        "Pará",
+        "Paraíba",
+        "Paraná",
+        "Pernambuco",
+        "Piauí",
+        "Rio de Janeiro",
+        "Rio Grande do Norte",
+        "Rio Grande do Sul",
+        "Rondônia",
+        "Roraima",
+        "Santa Catarina",
+        "São Paulo",
+        "Sergipe",
+        "Tocantins"
     )
 }

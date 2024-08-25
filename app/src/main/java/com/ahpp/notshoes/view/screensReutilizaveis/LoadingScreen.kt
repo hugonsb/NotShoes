@@ -1,4 +1,4 @@
-package com.ahpp.notshoes.util
+package com.ahpp.notshoes.view.screensReutilizaveis
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

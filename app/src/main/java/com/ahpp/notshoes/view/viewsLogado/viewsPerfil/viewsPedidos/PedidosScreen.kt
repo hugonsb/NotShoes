@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,7 +39,8 @@ import com.ahpp.notshoes.R
 import com.ahpp.notshoes.model.Venda
 import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.ui.theme.azulEscuro
-import com.ahpp.notshoes.util.cards.CardPedidos
+import com.ahpp.notshoes.view.screensReutilizaveis.LoadingScreen
+import com.ahpp.notshoes.view.cards.CardPedidos
 import com.ahpp.notshoes.util.conexao.possuiConexao
 import com.ahpp.notshoes.view.screensReutilizaveis.SemConexaoScreen
 import com.ahpp.notshoes.viewModel.logado.perfil.pedidos.PedidosScreenViewModel
@@ -61,16 +61,10 @@ fun PedidosScreen(
     if (!internetCheker) {
         SemConexaoScreen(onBackPressed = {
             internetCheker = possuiConexao(ctx)
+            if (internetCheker) pedidosScreenViewModel.atualizarPedidos()
         })
     } else if (isLoading) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+        LoadingScreen()
     } else {
         PedidosScreenContent(pedidosList, navControllerPerfil)
     }

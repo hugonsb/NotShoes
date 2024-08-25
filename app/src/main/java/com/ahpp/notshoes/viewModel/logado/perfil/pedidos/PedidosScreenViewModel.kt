@@ -16,7 +16,14 @@ class PedidosScreenViewModel : ViewModel() {
     val pedidosScreenState: StateFlow<PedidosScreenState> = _pedidosScreenState.asStateFlow()
 
     init {
+        atualizarPedidos()
+    }
+
+    fun atualizarPedidos() {
         viewModelScope.launch {
+            _pedidosScreenState.value = _pedidosScreenState.value.copy(
+                isLoading = true
+            )
             _pedidosScreenState.update { currentState ->
                 currentState.copy(
                     pedidosList = getPedidos(clienteLogado.idCliente),
