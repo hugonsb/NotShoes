@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -53,11 +55,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ahpp.notshoes.R
 import com.ahpp.notshoes.constantes.CustomTextFieldColors
+import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.states.deslogado.RegistroScreenState
 import com.ahpp.notshoes.ui.theme.azulClaro
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.corPlaceholder
-import com.ahpp.notshoes.navigation.canGoBack
 import com.ahpp.notshoes.viewModel.deslogado.RegistroScreenViewModel
 
 @Composable
@@ -310,14 +312,21 @@ fun RegistroContent(
                 shape = shapeArredondado,
                 elevation = elevationButton
             ) {
-                Text(
-                    text = stringResource(id = R.string.criar_conta),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(
-                        Color.White
+                if (enabledButton) {
+                    Text(
+                        text = stringResource(id = R.string.criar_conta),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        style = TextStyle(
+                            Color.White
+                        )
                     )
-                )
+                } else {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(35.dp),
+                        color = azulClaro
+                    )
+                }
             }
         }
 

@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,55 +29,46 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.ahpp.notshoes.R
 import com.ahpp.notshoes.ui.theme.azulEscuro
-import com.ahpp.notshoes.view.screensReutilizaveis.LoadingScreen
-import com.ahpp.notshoes.view.cards.CardListaDesejos
 import com.ahpp.notshoes.util.conexao.possuiConexao
-import com.ahpp.notshoes.view.screensReutilizaveis.ProdutoScreen
+import com.ahpp.notshoes.view.cards.CardListaDesejos
+import com.ahpp.notshoes.view.screensReutilizaveis.LoadingScreen
 import com.ahpp.notshoes.view.screensReutilizaveis.SemConexaoScreen
 import com.ahpp.notshoes.viewModel.logado.listaDesejos.ListaDesejosViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ListaDeDesejoscreen(listaDesejosViewModel: ListaDesejosViewModel = koinViewModel<ListaDesejosViewModel>()) {
+fun ListaDesejoscreen(
+    navControllerListaDesejos: NavController,
+    listaDesejosViewModel: ListaDesejosViewModel = koinViewModel<ListaDesejosViewModel>()
+) {
+
+    LaunchedEffect (Unit) {
+        listaDesejosViewModel.atualizarListaDesejos()
+    }
 
     val ctx = LocalContext.current
-
     var internetCheker by remember { mutableStateOf(possuiConexao(ctx)) }
-
-    //clickedProduto é usado para monitorar a tela de produto selecionado
-    //ela se torna true quando um produto é clicado lá em CardListaDesejos()
-    //e false quando clica em voltar na tela de produto selecionado
-
-    var clickedProduto by remember { mutableStateOf(false) }
-
     if (!internetCheker) {
         SemConexaoScreen(onBackPressed = {
             internetCheker = possuiConexao(ctx)
             if (internetCheker) listaDesejosViewModel.atualizarListaDesejos()
         })
-    } else if (clickedProduto) {
-        ProdutoScreen(onBackPressed = {
-            clickedProduto = false
-            internetCheker = possuiConexao(ctx)
-            listaDesejosViewModel.atualizarListaDesejos()
-        })
     } else {
-        ListaDesejosContent(onclickedProduto = { clickedProduto = true }, listaDesejosViewModel)
+        ListaDesejosContent(listaDesejosViewModel, navControllerListaDesejos)
     }
 }
 
 @Composable
 fun ListaDesejosContent(
-    onclickedProduto: () -> Unit,
-    listaDesejosViewModel: ListaDesejosViewModel
+    listaDesejosViewModel: ListaDesejosViewModel,
+    navController: NavController
 ) {
 
     val ctx = LocalContext.current
-
     val uiState by listaDesejosViewModel.listaDesejosState.collectAsState()
-
     val produtosList = uiState.produtosList
 
     // manter a posicao do scroll ao voltar pra tela
@@ -123,7 +115,11 @@ fun ListaDesejosContent(
                         state = listState
                     ) {
                         items(items = produtosList, key = { it.idProduto }) { produto ->
-                            CardListaDesejos(onClickProduto = { onclickedProduto() },
+                            CardListaDesejos(onClickProduto = {
+                                navController.navigate("produtoScreen/${produto.idProduto}") {
+                                    launchSingleTop = true
+                                }
+                            },
                                 produto,
                                 onRemoveProduct = {
                                     listaDesejosViewModel.removerProdutoListaDesejos(

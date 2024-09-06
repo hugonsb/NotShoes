@@ -45,7 +45,6 @@ import com.ahpp.notshoes.R
 import com.ahpp.notshoes.model.Produto
 import com.ahpp.notshoes.ui.theme.verde
 import com.ahpp.notshoes.util.conexao.possuiConexao
-import com.ahpp.notshoes.view.viewsLogado.produtoSelecionado
 import java.text.NumberFormat
 
 @Composable
@@ -80,7 +79,6 @@ fun CardResultados(
             .fillMaxWidth()
             .height(120.dp)
             .clickable(enabled = true, onClick = {
-                produtoSelecionado = produto
                 onClickProduto()
             }),
         elevation = CardDefaults.cardElevation(10.dp),

@@ -32,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,7 +60,6 @@ import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.branco
 import com.ahpp.notshoes.util.conexao.possuiConexao
 import com.ahpp.notshoes.view.cards.CardResultados
-import com.ahpp.notshoes.view.viewsLogado.produtoSelecionado
 import com.ahpp.notshoes.viewModel.screensReutilizaveis.ResultadosScreenViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -78,19 +78,16 @@ fun ResultadosScreen(
     val ctx = LocalContext.current
     var internetCheker by remember { mutableStateOf(possuiConexao(ctx)) }
     val uiState by resultadosScreenViewModel.resultadosScreenState.collectAsState()
-    var clickedProduto by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        resultadosScreenViewModel.buscarProduto(ctx, uiState.valorBusca, uiState.tipoBusca)
+    }
 
     // manter a posicao do scroll ao voltar pra tela
     val listState = rememberLazyListState()
 
     if (uiState.isLoading) {
         LoadingScreen()
-    } else if (clickedProduto) {
-        ProdutoScreen(onBackPressed = { clickedProduto = false },
-            favoritado = uiState.favoritos[produtoSelecionado.idProduto] ?: "0",
-            onFavoritoClick = { favoritado ->
-                resultadosScreenViewModel.adicionarListaDesejos(favoritado, produtoSelecionado)
-            })
     } else if (!internetCheker) {
         SemConexaoScreen(onBackPressed = {
             internetCheker = possuiConexao(ctx)
@@ -484,8 +481,9 @@ fun ResultadosScreen(
                         items(items = produtosList) { produto ->
                             CardResultados(
                                 onClickProduto = {
-                                    produtoSelecionado = produto
-                                    clickedProduto = true
+                                    navController.navigate("produtoScreen/${produto.idProduto}") {
+                                        launchSingleTop = true
+                                    }
                                 },
                                 produto = produto,
                                 favoritado = favoritos[produto.idProduto] ?: "0",
@@ -514,7 +512,6 @@ fun ResultadosScreen(
                     }
                 }
             }
-
         }
     }
 }

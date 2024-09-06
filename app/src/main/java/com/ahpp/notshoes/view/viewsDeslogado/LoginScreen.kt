@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,8 +56,8 @@ import com.ahpp.notshoes.states.deslogado.LoginScreenState
 import com.ahpp.notshoes.ui.theme.azulClaro
 import com.ahpp.notshoes.ui.theme.azulEscuro
 import com.ahpp.notshoes.ui.theme.corPlaceholder
-import com.ahpp.notshoes.view.screensReutilizaveis.LoadingScreen
 import com.ahpp.notshoes.util.conexao.possuiConexao
+import com.ahpp.notshoes.view.screensReutilizaveis.LoadingScreen
 import com.ahpp.notshoes.viewModel.deslogado.LoginScreenViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -285,14 +287,21 @@ fun LoginContent(
                 shape = shapeArredondado,
                 elevation = elevationButton
             ) {
-                Text(
-                    text = stringResource(id = R.string.entrar),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    style = TextStyle(
-                        Color.White
+                if (enabledButton) {
+                    Text(
+                        text = stringResource(id = R.string.entrar),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        style = TextStyle(
+                            Color.White
+                        )
                     )
-                )
+                } else {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(35.dp),
+                        color = azulClaro
+                    )
+                }
             }
         }
 

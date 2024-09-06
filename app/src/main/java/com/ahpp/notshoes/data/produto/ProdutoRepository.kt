@@ -156,9 +156,47 @@ class ProdutoRepository {
         }
     }
 
+    suspend fun getProdutoId(produtoId: String): Produto? {
+        return withContext(Dispatchers.IO) {
+            val url= "$apiUrl/get_produto_id/$produtoId"
+            val request = Request.Builder().url(url).build()
+
+            try {
+                val response = client.newCall(request).execute()
+                if (response.isSuccessful) {
+                    response.body?.string()?.let{ json ->
+                        val gson = Gson()
+                        val jsonElement = gson.fromJson(json, JsonElement::class.java)
+
+                        if (jsonElement.isJsonArray) {
+                            val jsonArray = jsonElement.asJsonArray
+                            if (jsonArray.size() > 0) {
+                                val produtoJson = jsonArray[0].asJsonArray
+                                return@withContext Produto(
+                                    produtoJson[0].asInt,
+                                    produtoJson[1].asString,
+                                    produtoJson[2].asInt,
+                                    produtoJson[3].asString,
+                                    produtoJson[4].asString,
+                                    produtoJson[5].asString,
+                                    produtoJson[6].asString,
+                                    produtoJson[7].asString,
+                                    produtoJson[8].asString,
+                                    produtoJson[9].asBoolean
+                                )
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return@withContext null
+        }
+    }
+
     suspend fun buscarProdutoNome(nome: String): List<Produto> {
         return withContext(Dispatchers.IO) {
-
             val url = "$apiUrl/busca_produto/$nome"
 
             val request = Request.Builder().url(url).build()
@@ -337,9 +375,9 @@ class ProdutoRepository {
     }
 }
 
-fun adicionarProdutoCarrinho(ctx: Context, produto: Produto) {
+fun adicionarProdutoCarrinho(ctx: Context, produtoId: Int) {
     val carrinhoRepository = CarrinhoRepository(
-        produto.idProduto,
+        produtoId,
         clienteLogado.idCliente
     )
 

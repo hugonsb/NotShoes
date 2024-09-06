@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ahpp.notshoes.view.screensReutilizaveis.ProdutoScreen
 import com.ahpp.notshoes.view.screensReutilizaveis.ResultadosScreen
 import com.ahpp.notshoes.view.viewsLogado.viewsInicio.InicioScreen
 
@@ -35,6 +36,15 @@ fun NavManagerInicioScreen(navBarController: NavHostController) {
                 tipoBusca.toString(),
                 fromScreen.toString()
             )
+        }
+
+        composable(
+            route = "produtoScreen/{produtoId}",
+            arguments = listOf(
+                navArgument("produtoId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val produtoId = backStackEntry.arguments?.getInt("produtoId")!!
+            ProdutoScreen(navController = navControllerInicio, produtoId = produtoId)
         }
     }
 }

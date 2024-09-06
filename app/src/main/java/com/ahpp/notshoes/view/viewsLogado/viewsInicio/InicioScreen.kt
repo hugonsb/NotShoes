@@ -73,6 +73,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImagePainter
@@ -84,9 +85,7 @@ import com.ahpp.notshoes.ui.theme.backgroundBarraPesquisa
 import com.ahpp.notshoes.ui.theme.branco
 import com.ahpp.notshoes.ui.theme.verde
 import com.ahpp.notshoes.util.conexao.possuiConexao
-import com.ahpp.notshoes.view.screensReutilizaveis.ProdutoScreen
 import com.ahpp.notshoes.view.screensReutilizaveis.SemConexaoScreen
-import com.ahpp.notshoes.view.viewsLogado.produtoSelecionado
 import com.ahpp.notshoes.viewModel.logado.inicio.PromocoesInicioScreenViewModel
 import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
@@ -97,14 +96,9 @@ fun InicioScreen(
     navControllerInicio: NavHostController, navBarController: NavHostController,
     promocoesInicioScreenViewModel: PromocoesInicioScreenViewModel = koinViewModel<PromocoesInicioScreenViewModel>()
 ) {
-
     val uiState by promocoesInicioScreenViewModel.promocoesInicioScreenState.collectAsState()
-    val ofertas = uiState.ofertas
-
     var internetCheker by remember { mutableStateOf(false) }
 
-    // monitorar click em produtos
-    var clickedProduto by remember { mutableStateOf(false) }
     // manter a posicao do scroll ao voltar pra tela
     val scrollState = rememberScrollState()
     val ctx = LocalContext.current
@@ -149,10 +143,6 @@ fun InicioScreen(
             internetCheker = possuiConexao(ctx)
             if (internetCheker) promocoesInicioScreenViewModel.getPromocoes()
         })
-    } else if (clickedProduto) {
-        ProdutoScreen(
-            onBackPressed = { clickedProduto = false },
-        )
     } else {
         Column(
             modifier = Modifier
@@ -163,7 +153,7 @@ fun InicioScreen(
             PagerDescontos(navControllerInicio)
             PagerFiltroValores(navControllerInicio)
             FiltrosTelaInicial(navControllerInicio, navBarController)
-            Promocoes(onPromocaoClicked = { clickedProduto = true }, ofertas)
+            Promocoes(uiState.ofertas, navControllerInicio)
             NavegarPorMarcas(navControllerInicio)
         }
     }
@@ -172,9 +162,7 @@ fun InicioScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(navControllerInicio: NavHostController) {
-
     var text by remember { mutableStateOf("") }
-
     SearchBar(
         modifier = Modifier
             .fillMaxWidth()
@@ -527,10 +515,7 @@ fun FiltrosTelaInicial(
 
 @SuppressLint("DefaultLocale")
 @Composable
-fun Promocoes(
-    onPromocaoClicked: () -> Unit,
-    ofertas: List<Produto>,
-) {
+fun Promocoes(ofertas: List<Produto>, navController: NavController) {
     val localeBR = java.util.Locale("pt", "BR")
     val numberFormat = NumberFormat.getCurrencyInstance(localeBR)
 
@@ -623,8 +608,9 @@ fun Promocoes(
                             modifier = Modifier
                                 .padding(horizontal = 5.dp)
                                 .clickable(enabled = true, onClick = {
-                                    produtoSelecionado = produtoEmPromocao
-                                    onPromocaoClicked()
+                                    navController.navigate("produtoScreen/${produtoEmPromocao.idProduto}") {
+                                        launchSingleTop = true
+                                    }
                                 }),
                             elevation = CardDefaults.cardElevation(2.dp)
                         ) {
