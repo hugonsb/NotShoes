@@ -271,7 +271,10 @@ fun RegistroContent(
                 onCheckedChange = { checkedTermos = it },
                 colors = CheckboxDefaults.colors(azulEscuro)
             )
-            Row {
+            Row(
+                modifier = Modifier.weight(1f), // testar em telas menores
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = stringResource(id = R.string.li_concordo_com) + " ",
                     style = MaterialTheme.typography.bodyLarge,
